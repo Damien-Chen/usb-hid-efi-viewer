@@ -15,6 +15,7 @@ An interactive web-based tool to visualize and lookup USB HID Usage IDs and thei
   - **EFI Key**: The internal key code used by EDK2 (`EfiKeyC1`, `EfiKeyEnter`, etc.).
   - **EFI Scan Code**: The EFI scan code returned by `SimpleTextIn` protocol (if applicable).
 - **Modern UI**: Dark theme with glassmorphism effects and responsive design.
+- **Automation Test Integration**: Use Robot Framework to automate the testing process.
 
 ## Technical Details
 
