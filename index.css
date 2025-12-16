@@ -10,35 +10,35 @@
     --surface-hover: rgba(255, 255, 255, 0.08);
     --border: rgba(255, 255, 255, 0.08);
     --border-hover: rgba(255, 255, 255, 0.15);
-    
+
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-tertiary: rgba(255, 255, 255, 0.5);
     --text-muted: rgba(255, 255, 255, 0.35);
-    
+
     --accent-primary: #6366f1;
     --accent-secondary: #818cf8;
     --accent-glow: rgba(99, 102, 241, 0.4);
-    
+
     --key-bg: linear-gradient(145deg, #1e1e2a, #151520);
     --key-bg-hover: linear-gradient(145deg, #2a2a3a, #1a1a28);
-    --key-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), 
-                  0 1px 3px rgba(0, 0, 0, 0.3),
-                  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --key-shadow: 0 4px 6px rgba(0, 0, 0, 0.4),
+        0 1px 3px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     --key-shadow-hover: 0 8px 16px rgba(99, 102, 241, 0.2),
-                        0 4px 8px rgba(0, 0, 0, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-    
+
     /* Sizing */
     --key-size: 48px;
     --key-gap: 4px;
     --key-radius: 8px;
     --section-gap: 20px;
-    
+
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
@@ -48,7 +48,9 @@
 /* ============================================
    Base Styles
    ============================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -66,7 +68,7 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: auto;
-    background-image: 
+    background-image:
         radial-gradient(ellipse at top, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
         radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
 }
@@ -204,26 +206,35 @@ body {
 }
 
 /* ============================================
-   Keyboard Wrapper
+   Keyboard Wrapper & Sections
    ============================================ */
 .keyboard-wrapper {
     padding: 24px;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 20px;
-    box-shadow: 
+    box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.5),
         inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    display: inline-block;
+    /* Fit content */
 }
 
 .keyboard {
+    display: flex;
+    gap: 20px;
+    /* Gap between Main, Nav, and Numpad blocks */
+    align-items: flex-start;
+}
+
+.keyboard-block {
     display: flex;
     flex-direction: column;
     gap: var(--key-gap);
 }
 
 /* ============================================
-   Keyboard Rows & Sections
+   Main & Nav Rows
    ============================================ */
 .keyboard-row {
     display: flex;
@@ -240,8 +251,33 @@ body {
     width: var(--section-gap);
 }
 
-.row-gap {
-    height: 12px;
+/* ============================================
+   Numpad Grid
+   ============================================ */
+.numpad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, var(--key-size));
+    grid-template-rows: repeat(5, var(--key-size));
+    gap: var(--key-gap);
+}
+
+/* Numpad Key Spans */
+.key-numpad-0 {
+    grid-column: span 2;
+    width: auto !important;
+    /* Override fixed width */
+}
+
+.key-numpad-plus {
+    grid-row: span 2;
+    height: auto !important;
+    /* Override fixed height */
+}
+
+.key-numpad-enter {
+    grid-row: span 2;
+    height: auto !important;
+    /* Override fixed height */
 }
 
 /* ============================================
@@ -251,7 +287,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: var(--key-size);
+    width: var(--key-size);
+    /* Default width */
     height: var(--key-size);
     padding: 4px 8px;
     background: var(--key-bg);
@@ -262,6 +299,7 @@ body {
     transition: var(--transition-fast);
     position: relative;
     overflow: hidden;
+    user-select: none;
 }
 
 .key::before {
@@ -313,14 +351,37 @@ body {
 }
 
 /* Key size variations */
-.key-1 { min-width: var(--key-size); }
-.key-1-25 { min-width: calc(var(--key-size) * 1.25 + var(--key-gap) * 0.25); }
-.key-1-5 { min-width: calc(var(--key-size) * 1.5 + var(--key-gap) * 0.5); }
-.key-1-75 { min-width: calc(var(--key-size) * 1.75 + var(--key-gap) * 0.75); }
-.key-2 { min-width: calc(var(--key-size) * 2 + var(--key-gap)); }
-.key-2-25 { min-width: calc(var(--key-size) * 2.25 + var(--key-gap) * 1.25); }
-.key-2-75 { min-width: calc(var(--key-size) * 2.75 + var(--key-gap) * 1.75); }
-.key-6-25 { min-width: calc(var(--key-size) * 6.25 + var(--key-gap) * 5.25); }
+.key-1 {
+    min-width: var(--key-size);
+}
+
+.key-1-25 {
+    min-width: calc(var(--key-size) * 1.25 + var(--key-gap) * 0.25);
+}
+
+.key-1-5 {
+    min-width: calc(var(--key-size) * 1.5 + var(--key-gap) * 0.5);
+}
+
+.key-1-75 {
+    min-width: calc(var(--key-size) * 1.75 + var(--key-gap) * 0.75);
+}
+
+.key-2 {
+    min-width: calc(var(--key-size) * 2 + var(--key-gap));
+}
+
+.key-2-25 {
+    min-width: calc(var(--key-size) * 2.25 + var(--key-gap) * 1.25);
+}
+
+.key-2-75 {
+    min-width: calc(var(--key-size) * 2.75 + var(--key-gap) * 1.75);
+}
+
+.key-6-25 {
+    min-width: calc(var(--key-size) * 6.25 + var(--key-gap) * 5.25);
+}
 
 /* Special key sizes for different layouts */
 .key-iso-enter {
@@ -398,11 +459,11 @@ body {
     :root {
         --key-size: 36px;
     }
-    
+
     .info-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .info-panel {
         min-width: 350px;
     }
@@ -413,11 +474,11 @@ body {
         --key-size: 30px;
         --key-gap: 3px;
     }
-    
+
     .header h1 {
         font-size: 1.5rem;
     }
-    
+
     .container {
         padding: 20px 10px;
     }
