@@ -347,6 +347,13 @@ body {
     font-size: 1rem;
 }
 
+.win-logo-svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    display: block;
+}
+
 /* Key size variations */
 .key-1 {
     min-width: var(--key-size);

@@ -167,11 +167,11 @@ const KEY_DATA = {
     0xE0: { name: 'Left Control', efiKey: 'EfiKeyLCtrl', scanCode: 'SCAN_NULL' },
     0xE1: { name: 'Left Shift', efiKey: 'EfiKeyLShift', scanCode: 'SCAN_NULL' },
     0xE2: { name: 'Left Alt', efiKey: 'EfiKeyA0', scanCode: 'SCAN_NULL' },
-    0xE3: { name: 'Left GUI (Win)', efiKey: 'EfiKeyA1', scanCode: 'SCAN_NULL' },
+    0xE3: { name: 'Left Windows', efiKey: 'EfiKeyA1', scanCode: 'SCAN_NULL' },
     0xE4: { name: 'Right Control', efiKey: 'EfiKeyRCtrl', scanCode: 'SCAN_NULL' },
     0xE5: { name: 'Right Shift', efiKey: 'EfiKeyRShift', scanCode: 'SCAN_NULL' },
     0xE6: { name: 'Right Alt', efiKey: 'EfiKeyA3', scanCode: 'SCAN_NULL' },
-    0xE7: { name: 'Right GUI (Win)', efiKey: 'EfiKeyA4', scanCode: 'SCAN_NULL' },
+    0xE7: { name: 'Right Windows', efiKey: 'EfiKeyA4', scanCode: 'SCAN_NULL' },
 };
 
 // ============================================
@@ -581,10 +581,20 @@ function createKey(keyData) {
     // Create label
     const label = document.createElement('span');
     label.className = 'key-label';
-    if (keyData.label.length > 4) {
-        label.classList.add('key-label-small');
+
+    // Handle Windows Logo
+    if (keyData.label === 'Win') {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 88 88');
+        svg.setAttribute('class', 'win-logo-svg');
+        svg.innerHTML = '<rect x="0" y="0" width="42" height="42" /><rect x="46" y="0" width="42" height="42" /><rect x="0" y="46" width="42" height="42" /><rect x="46" y="46" width="42" height="42" />';
+        label.appendChild(svg);
+    } else {
+        if (keyData.label.length > 4) {
+            label.classList.add('key-label-small');
+        }
+        label.textContent = keyData.label;
     }
-    label.textContent = keyData.label;
     key.appendChild(label);
 
     // Event listeners

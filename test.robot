@@ -3,7 +3,7 @@ Library           SeleniumLibrary
 
 *** Variables ***
 ${BROWSER}        headlesschrome
-${FILE_URL}       ${CURDIR}/index.html
+${FILE_URL}       ${CURDIR}/src/index.html
 
 *** Test Cases ***
 Verify Page Title
