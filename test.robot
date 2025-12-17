@@ -21,7 +21,7 @@ Verify Header Text
 Verify Key Hover Functionality
     [Documentation]    Verifies that hovering over keys updates the info panel correctly.
     Open Browser    file://${FILE_URL}    ${BROWSER}
-    Maximize Browser Window
+    Set Window Size    1920    1080
     
     # Test Key 'A' (HID 0x04)
     Verify Key Info    4    A    0x04    EfiKeyC1
@@ -45,6 +45,12 @@ Verify Key Info
     # Select the key by its data-hid attribute (calculated from decimal)
     # The data-hid attribute in HTML is merely the decimal number
     ${key_locator}=    Set Variable    css:.key[data-hid="${hid_dec}"]
+    
+    # Wait for key to be present in DOM
+    Wait Until Page Contains Element    ${key_locator}
+
+    # Scroll to element to ensure visibility
+    Scroll Element Into View    ${key_locator}
     
     # Wait for key to be visible and hover
     Wait Until Element Is Visible    ${key_locator}
