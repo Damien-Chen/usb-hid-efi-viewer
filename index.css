@@ -387,6 +387,10 @@ body {
     min-width: calc(var(--key-size) * 6.25 + var(--key-gap) * 5.25);
 }
 
+.key-7-5 {
+    min-width: calc(var(--key-size) * 7.5 + var(--key-gap) * 6.5);
+}
+
 /* Special key sizes for different layouts */
 .key-iso-enter {
     min-width: calc(var(--key-size) * 1.25 + var(--key-gap) * 0.25);

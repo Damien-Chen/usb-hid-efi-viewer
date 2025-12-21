@@ -332,9 +332,8 @@ const LAYOUT_ANSI = {
                 { hid: 0xE0, label: 'Ctrl', size: '1-25', modifier: true },
                 { hid: 0xE3, label: 'Win', size: '1-25', modifier: true },
                 { hid: 0xE2, label: 'Alt', size: '1-25', modifier: true },
-                { hid: 0x2C, label: 'Space', size: '6-25' },
+                { hid: 0x2C, label: 'Space', size: '7-5' },
                 { hid: 0xE6, label: 'Alt', size: '1-25', modifier: true },
-                { hid: 0xE7, label: 'Win', size: '1-25', modifier: true },
                 { hid: 0x65, label: 'Menu', size: '1-25', modifier: true },
                 { hid: 0xE4, label: 'Ctrl', size: '1-25', modifier: true },
             ]]
