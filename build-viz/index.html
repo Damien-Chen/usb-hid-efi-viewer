@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDK2 BIOS Build Pipeline Visualizer</title>
+    <title>EDK2 BIOS 編譯流程視覺化</title>
     <meta name="description"
         content="Interactive visualization of how INF, DSC and FDF files are compiled into a BIOS ROM through EDK2 BaseTools.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,6 @@
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="i18n.js"></script>
 </head>
 
 <body>
@@ -22,34 +21,26 @@
 
     <nav class="top-nav">
         <div class="brand">
-            <a href="../index.html" class="back-link" data-i18n="nav.back">← Back to Tools</a>
-            <span data-i18n="nav.title">EDK2 BIOS Build Pipeline</span>
+            <a href="../index.html" class="back-link">← 回工具列表</a>
+            <span>EDK2 Build Infrastructure</span>
         </div>
 
         <ul class="nav-links">
-            <li><a class="nav-link active" href="#overview" data-i18n="nav.overview">File Types</a></li>
-            <li><a class="nav-link" href="#pipeline" data-i18n="nav.pipeline">Build Pipeline</a></li>
-            <li><a class="nav-link" href="#journey" data-i18n="nav.journey">File Journey</a></li>
-            <li><a class="nav-link" href="#command" data-i18n="nav.command">Build Command</a></li>
-            <li><a class="nav-link" href="#references" data-i18n="nav.references">References</a></li>
+            <li><a class="nav-link active" href="#overview">檔案類型</a></li>
+            <li><a class="nav-link" href="#pipeline">編譯管線</a></li>
+            <li><a class="nav-link" href="#journey">單檔追蹤</a></li>
+            <li><a class="nav-link" href="#command">建置命令</a></li>
+            <li><a class="nav-link" href="#references">參考來源</a></li>
         </ul>
-
-        <div class="lang-switcher">
-            <button class="lang-btn" data-lang="zh-TW" title="繁體中文">中文</button>
-            <button class="lang-btn" data-lang="en" title="English">EN</button>
-        </div>
     </nav>
 
     <main class="page">
 
         <!-- ── Section 1: Hero / File Overview ── -->
         <header id="overview" class="section hero">
-            <p class="eyebrow" data-i18n="hero.eyebrow">From Source Metadata to Flashable BIOS ROM</p>
-            <h1 data-i18n="hero.title">How your INF / DSC / FDF becomes a BIOS ROM</h1>
-            <p class="hero-desc" data-i18n="hero.desc">
-                When you write a .inf, .dsc or .fdf, build.exe invokes a chain of programs to parse, compile and
-                assemble it into a flashable .fd (BIOS ROM). Select any file type below to trace its complete journey.
-            </p>
+            <p class="eyebrow">從原始檔到可燒錄的 BIOS ROM</p>
+            <h1>你的 INF / DSC / FDF 如何變成 BIOS ROM</h1>
+            <p class="hero-desc">你寫下一個 .inf、.dsc 或 .fdf，build.exe 會呼叫一系列程式對它進行解析、編譯、組裝，最後產生可燒錄的 .fd（BIOS ROM）。點選下方任一檔案類型，追蹤它的完整旅程。</p>
 
             <div class="file-grid">
                 <article class="file-card inf">
@@ -57,10 +48,9 @@
                         <span class="file-ext">.inf</span>
                         <span class="file-badge inf-badge">Module</span>
                     </div>
-                    <h2 data-i18n="file.inf.title">Module Description (.inf)</h2>
-                    <p data-i18n="file.inf.desc">Defines a module's sources, package dependencies, Library Classes,
-                        PCDs and module type.</p>
-                    <button class="track-btn" data-tab="inf" data-i18n="file.inf.track">Trace INF path →</button>
+                    <h2>模組描述檔 (.inf)</h2>
+                    <p>定義模組的來源檔、相依套件、Library Classes、PCD 與模組類型。每個 UEFI 模組（Driver/Library/Application）都有一個 INF。</p>
+                    <button class="track-btn" data-tab="inf">追蹤 INF 路徑 →</button>
                 </article>
 
                 <article class="file-card dsc">
@@ -68,10 +58,9 @@
                         <span class="file-ext">.dsc</span>
                         <span class="file-badge dsc-badge">Platform</span>
                     </div>
-                    <h2 data-i18n="file.dsc.title">Platform Description (.dsc)</h2>
-                    <p data-i18n="file.dsc.desc">Defines which modules to build, Library Class mappings, PCD values
-                        and build options for the entire platform.</p>
-                    <button class="track-btn" data-tab="dsc" data-i18n="file.dsc.track">Trace DSC path →</button>
+                    <h2>平台描述檔 (.dsc)</h2>
+                    <p>定義整個平台要建置哪些模組、Library Class 的對應關係、PCD 值與建置選項。是 build.exe 的主要入口（-p 參數）。</p>
+                    <button class="track-btn" data-tab="dsc">追蹤 DSC 路徑 →</button>
                 </article>
 
                 <article class="file-card fdf">
@@ -79,10 +68,9 @@
                         <span class="file-ext">.fdf</span>
                         <span class="file-badge fdf-badge">Flash Layout</span>
                     </div>
-                    <h2 data-i18n="file.fdf.title">Flash Layout (.fdf)</h2>
-                    <p data-i18n="file.fdf.desc">Defines the final BIOS ROM flash layout: which modules go in which
-                        FV, region sizes and offsets.</p>
-                    <button class="track-btn" data-tab="fdf" data-i18n="file.fdf.track">Trace FDF path →</button>
+                    <h2>映像佈局檔 (.fdf)</h2>
+                    <p>定義最終 BIOS ROM 的 Flash 佈局：哪些模組放進哪個 FV、FD 各區段大小與位置、Capsule 組成規則。</p>
+                    <button class="track-btn" data-tab="fdf">追蹤 FDF 路徑 →</button>
                 </article>
             </div>
         </header>
@@ -90,14 +78,13 @@
         <!-- ── Section 2: Build Pipeline ── -->
         <section id="pipeline" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="pipeline.title">Build Pipeline: Programs invoked by build.exe</h2>
-                <p data-i18n="pipeline.desc">From running the build command to a BIOS ROM, here is every program
-                    called and what it does. Click any node for a detailed explanation.</p>
+                <h2>編譯管線：build.exe 呼叫了哪些程式</h2>
+                <p>從你執行 build 指令到產生 BIOS ROM，以下是每支被呼叫的程式及其職責。點擊任一節點查看詳細說明。</p>
             </div>
 
             <div class="pipeline-layout">
                 <div class="pipeline-diagram-wrap">
-                    <div class="pipeline-hint" data-i18n="pipeline.clickHint">Click a node for details</div>
+                    <div class="pipeline-hint">點擊節點查看詳細說明</div>
                     <svg id="pipeline-svg" viewBox="0 0 1100 400" role="img"
                         aria-label="EDK2 build pipeline diagram showing all programs from build.exe to BIOS ROM">
                         <!-- Rendered by script.js -->
@@ -105,22 +92,22 @@
                 </div>
 
                 <div class="pipeline-detail" id="pipeline-detail">
-                    <h3 class="detail-title" data-i18n="pipeline.detail.title">Program Details</h3>
+                    <h3 class="detail-title">程式詳細說明</h3>
                     <div class="detail-placeholder" id="detail-placeholder">
-                        <span data-i18n="pipeline.detail.placeholder">← Click any program node in the pipeline</span>
+                        <span>← 點擊管線上任一程式節點</span>
                     </div>
                     <div class="detail-content hidden" id="detail-content">
                         <div class="detail-name" id="detail-name"></div>
                         <div class="detail-row">
-                            <span class="detail-label" data-i18n="pipeline.detail.desc">Description</span>
+                            <span class="detail-label">說明</span>
                             <p class="detail-text" id="detail-desc"></p>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label" data-i18n="pipeline.detail.input">Input</span>
+                            <span class="detail-label">輸入</span>
                             <p class="detail-text detail-mono" id="detail-input"></p>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label" data-i18n="pipeline.detail.output">Output</span>
+                            <span class="detail-label">輸出</span>
                             <p class="detail-text detail-mono" id="detail-output"></p>
                         </div>
                     </div>
@@ -131,15 +118,14 @@
         <!-- ── Section 3: File Journey (tabs) ── -->
         <section id="journey" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="journey.title">File Journey: Select a file to trace</h2>
-                <p data-i18n="journey.desc">Select INF, DSC or FDF to see every step and program involved — from
-                    first being read to becoming the final BIOS ROM.</p>
+                <h2>單檔追蹤：選擇你要追蹤的檔案</h2>
+                <p>選擇 INF、DSC 或 FDF，查看該檔案從被讀取、解析、轉換到最終成為 BIOS ROM 的每一個步驟與對應程式。</p>
             </div>
 
             <div class="journey-tabs">
-                <button class="journey-tab active" data-tab="inf" data-i18n="journey.tab.inf">.inf Module</button>
-                <button class="journey-tab" data-tab="dsc" data-i18n="journey.tab.dsc">.dsc Platform</button>
-                <button class="journey-tab" data-tab="fdf" data-i18n="journey.tab.fdf">.fdf Flash Layout</button>
+                <button class="journey-tab active" data-tab="inf">.inf 模組描述</button>
+                <button class="journey-tab" data-tab="dsc">.dsc 平台描述</button>
+                <button class="journey-tab" data-tab="fdf">.fdf 映像佈局</button>
             </div>
 
             <div id="journey-content" class="journey-content">
@@ -150,18 +136,18 @@
         <!-- ── Section 4: Build Command Builder ── -->
         <section id="command" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="command.title">Build Command Builder</h2>
-                <p data-i18n="command.desc">Compose a build command and see which pipeline programs it activates.</p>
+                <h2>建置命令組裝器</h2>
+                <p>快速組合 build 命令，並對照它在管線中的作用。</p>
             </div>
 
             <div class="cmd-grid">
                 <label>
-                    <span data-i18n="command.platform">Platform DSC</span>
+                    <span>平台 DSC</span>
                     <input id="platform-input" type="text" value="OvmfPkg/OvmfPkgX64.dsc">
                 </label>
 
                 <label>
-                    <span data-i18n="command.arch">Architecture</span>
+                    <span>架構</span>
                     <select id="arch-select">
                         <option value="X64">X64</option>
                         <option value="IA32">IA32</option>
@@ -171,7 +157,7 @@
                 </label>
 
                 <label>
-                    <span data-i18n="command.target">Build target</span>
+                    <span>建置目標</span>
                     <select id="target-select">
                         <option value="DEBUG">DEBUG</option>
                         <option value="RELEASE">RELEASE</option>
@@ -180,7 +166,7 @@
                 </label>
 
                 <label>
-                    <span data-i18n="command.toolchain">Toolchain tag</span>
+                    <span>工具鏈 Tag</span>
                     <select id="toolchain-select">
                         <option value="GCC5">GCC5</option>
                         <option value="VS2022">VS2022</option>
@@ -189,48 +175,44 @@
                 </label>
 
                 <label>
-                    <span data-i18n="command.mode">Build mode</span>
+                    <span>建置模式</span>
                     <select id="mode-select">
-                        <option value="platform" data-i18n="command.modePlatform">Platform</option>
-                        <option value="module" data-i18n="command.modeModule">Single module</option>
+                        <option value="platform">整平台</option>
+                        <option value="module">單模組</option>
                     </select>
                 </label>
 
                 <label id="module-field" class="hidden">
-                    <span data-i18n="command.modulePath">Module INF</span>
+                    <span>模組 INF</span>
                     <input id="module-input" type="text"
                         value="MdeModulePkg/Application/HelloWorld/HelloWorld.inf">
                 </label>
 
                 <label>
-                    <span data-i18n="command.fdfPath">FDF override</span>
+                    <span>FDF 覆寫</span>
                     <input id="fdf-input" type="text" value="OvmfPkg/OvmfPkg.fdf">
                 </label>
 
                 <label class="checkline">
                     <input id="fdf-enable" type="checkbox" checked>
-                    <span data-i18n="command.useFdf">Enable -f (override DSC's FDF)</span>
+                    <span>啟用 -f（覆寫 DSC 中的 FDF）</span>
                 </label>
 
                 <label class="checkline">
                     <input id="fds-enable" type="checkbox" checked>
-                    <span data-i18n="command.fdsTarget">Append fds target (trigger GenFds ImageGen)</span>
+                    <span>附加 fds 目標（觸發 GenFds ImageGen）</span>
                 </label>
             </div>
 
             <pre id="build-command-output" class="command-output"></pre>
 
             <div class="command-notes">
-                <h3 data-i18n="command.notesTitle">How these flags map to the pipeline</h3>
+                <h3>這些參數對應管線的哪裡</h3>
                 <ul>
-                    <li data-i18n="command.note1">-p selects DSC → triggers DscParser, defines the entire module set
-                        and Library mappings.</li>
-                    <li data-i18n="command.note2">-a/-b/-t set arch/target/toolchain → determines which CC/Linker in
-                        tools_def.txt is used.</li>
-                    <li data-i18n="command.note3">-f overrides the FDF path → changes what FdfParser reads and how
-                        GenFds assembles the ROM.</li>
-                    <li data-i18n="command.note4">-m builds only this INF, skipping other [Components], but still
-                        uses full platform context.</li>
+                    <li>-p 指定 DSC → 觸發 DscParser，決定要建置的所有模組與 Library 對應。</li>
+                    <li>-a/-b/-t 決定架構/目標/工具鏈 → 影響 tools_def.txt 中 CC/Linker 的選擇。</li>
+                    <li>-f 覆寫 FDF 路徑 → 影響 FdfParser 讀取的檔案，進而改變 GenFds 的組裝方式。</li>
+                    <li>-m 進入單模組建置，跳過其他 [Components]，只執行該 INF 的完整路徑。</li>
                 </ul>
             </div>
         </section>
@@ -238,53 +220,47 @@
         <!-- ── Section 5: References ── -->
         <section id="references" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="references.title">Official EDK2 docs referenced for this page</h2>
-                <p data-i18n="references.desc">The pipeline and naming on this page are based on the following
-                    specification chapters.</p>
+                <h2>本頁參考的官方 EDK2 文檔</h2>
+                <p>以下章節是本視覺化內容的主要依據。</p>
             </div>
 
             <ul class="refs-list">
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/release-1.28/4_edk_ii_build_process_overview/42_build_process_overview.html"
                         target="_blank" rel="noopener noreferrer">4.2 Build Process Overview</a>
-                    <p data-i18n="references.r1">Defines the three major stages: AutoGen, MAKE, and ImageGen.</p>
+                    <p>定義三大階段：AutoGen、MAKE、ImageGen。</p>
                 </li>
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/draft/8_pre-build_autogen_stage/82_auto-generation_process.html"
                         target="_blank" rel="noopener noreferrer">8.2 Auto-generation Process</a>
-                    <p data-i18n="references.r2">Details parsing of DSC/FDF/INF/DEC, library and PCD precedence,
-                        AutoGen and makefile generation.</p>
+                    <p>說明 DSC/FDF/INF/DEC 解析、Library/PCD 優先序與 AutoGen 輸出。</p>
                 </li>
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/draft/10_post-build_imagegen_stage_-_flash/"
                         target="_blank" rel="noopener noreferrer">10 Post-build ImageGen Stage</a>
-                    <p data-i18n="references.r3">Documents the .efi → section/FFS/FV/FD conversion path and the role
-                        of GenFds.</p>
+                    <p>描述 .efi 到 section/FFS/FV/FD 的 ImageGen 路徑。</p>
                 </li>
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/draft/10_post-build_imagegen_stage_-_flash/101_overview_of_flash_device_layout.html"
                         target="_blank" rel="noopener noreferrer">10.1 Overview of Flash Device Layout</a>
-                    <p data-i18n="references.r4">Shows GenFds invocation and its sub-tools: GenSec, GenFfs, GenFv,
-                        GenFw, GenVtf.</p>
+                    <p>列出 GenFds 與其子工具：GenSec、GenFfs、GenFv、GenFw、GenVtf。</p>
                 </li>
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/draft/10_post-build_imagegen_stage_-_flash/104_create_the_fv_image_files.html"
                         target="_blank" rel="noopener noreferrer">10.4 Create the FV Image File(s)</a>
-                    <p data-i18n="references.r5">Explains how [FV] entries in FDF drive FV composition and the
-                        generated FV INF consumed by GenFv.</p>
+                    <p>說明 FDF [FV] 如何驅動 FV 組裝與 GenFv 輸入。</p>
                 </li>
                 <li>
                     <a href="https://tianocore-docs.github.io/edk2-BuildSpecification/release-1.28/appendix_d_buildexe_command/d4_usage.html"
                         target="_blank" rel="noopener noreferrer">Appendix D.4 build.exe Usage</a>
-                    <p data-i18n="references.r6">Covers practical command-line options like -p/-m/-a/-b/-t/-f/-D and
-                        --pcd.</p>
+                    <p>提供 build.exe 實務參數（-p/-m/-a/-b/-t/-f/-D/--pcd）。</p>
                 </li>
             </ul>
         </section>
     </main>
 
     <footer class="footer">
-        <p data-i18n="footer.text">EDK2 BIOS Build Pipeline Visualization | Educational purpose</p>
+        <p>EDK2 BIOS 編譯流程視覺化 | 教學用途</p>
     </footer>
 
     <script src="script.js" defer></script>

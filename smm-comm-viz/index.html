@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMM/MM Communication Visualizer</title>
+    <title>SMM/MM 通訊機制視覺化</title>
     <meta name="description" content="Interactive visualization of SMM/MM communication in UEFI: SMI trigger mechanism, SMRAM layout, communication protocol, handler registration, and Standalone MM.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,21 +18,17 @@
 
 <!-- ===== top navigation ===== -->
 <nav class="top-nav">
-    <a href="../index.html" class="back-link" data-i18n="nav.back">&larr; Back to Tools</a>
+    <a href="../index.html" class="back-link">← 返回工具列表</a>
     <div class="nav-links">
-        <a href="#overview"     class="nav-link active" data-i18n="nav.overview">Overview</a>
-        <a href="#architecture" class="nav-link" data-i18n="nav.architecture">Architecture</a>
-        <a href="#trigger"      class="nav-link" data-i18n="nav.trigger">SMI Trigger</a>
-        <a href="#flow"         class="nav-link" data-i18n="nav.flow">Comm Flow</a>
-        <a href="#buffer"       class="nav-link" data-i18n="nav.buffer">Buffer Layout</a>
-        <a href="#handler"      class="nav-link" data-i18n="nav.handler">Handler Reg.</a>
-        <a href="#standalone"   class="nav-link" data-i18n="nav.standalone">Standalone MM</a>
-        <a href="#code"         class="nav-link" data-i18n="nav.code">Code</a>
-        <a href="#references"   class="nav-link" data-i18n="nav.references">References</a>
-    </div>
-    <div class="lang-switcher">
-        <button class="lang-btn" data-lang="zh-TW" title="繁體中文">中文</button>
-        <button class="lang-btn" data-lang="en"    title="English">EN</button>
+        <a href="#overview"     class="nav-link active">概述</a>
+        <a href="#architecture" class="nav-link">記憶體架構</a>
+        <a href="#trigger"      class="nav-link">SMI 觸發</a>
+        <a href="#flow"         class="nav-link">通訊流程</a>
+        <a href="#buffer"       class="nav-link">通訊緩衝區</a>
+        <a href="#handler"      class="nav-link">處理器註冊</a>
+        <a href="#standalone"   class="nav-link">Standalone MM</a>
+        <a href="#code"         class="nav-link">程式碼解析</a>
+        <a href="#references"   class="nav-link">參考資源</a>
     </div>
 </nav>
 
@@ -40,38 +36,38 @@
 <!-- SECTION : Overview                                        -->
 <!-- ========================================================= -->
 <section id="overview" class="section hero">
-    <h1 data-i18n="overview.title">SMM/MM Communication Overview</h1>
-    <p class="section-subtitle" data-i18n="overview.subtitle">Understanding how DXE triggers and communicates with SMM</p>
+    <h1>SMM/MM 通訊機制概述</h1>
+    <p class="section-subtitle">理解 DXE 如何觸發並與 SMM (System Management Mode) 溝通</p>
 
     <!-- communication phase timeline -->
     <div class="phase-timeline">
-        <div class="phase-item dxe-phase"><span data-i18n="phase.dxe">DXE Driver</span></div>
+        <div class="phase-item dxe-phase"><span>DXE 驅動程式</span></div>
         <div class="phase-arrow">&rarr;</div>
-        <div class="phase-item dxe-phase"><span data-i18n="phase.comm">Prepare Comm Buffer</span></div>
+        <div class="phase-item dxe-phase"><span>準備通訊緩衝區</span></div>
         <div class="phase-arrow">&rarr;</div>
-        <div class="phase-item smi-phase highlight"><span data-i18n="phase.smi">Trigger SMI</span></div>
+        <div class="phase-item smi-phase highlight"><span>觸發 SMI</span></div>
         <div class="phase-arrow">&rarr;</div>
-        <div class="phase-item smm-phase"><span data-i18n="phase.smm">SMM Processing</span></div>
+        <div class="phase-item smm-phase"><span>SMM 處理</span></div>
         <div class="phase-arrow">&rarr;</div>
-        <div class="phase-item ret-phase"><span data-i18n="phase.ret">Return Result</span></div>
+        <div class="phase-item ret-phase"><span>返回結果</span></div>
     </div>
 
     <!-- three info cards -->
     <div class="info-grid">
         <div class="info-card">
             <div class="info-icon smm-icon">S</div>
-            <h3 data-i18n="overview.what.title">What is SMM?</h3>
-            <p  data-i18n="overview.what.desc"></p>
+            <h3>什麼是 SMM？</h3>
+            <p >SMM（System Management Mode）是 x86 處理器中最高特權的執行模式。它運行在獨立的記憶體空間（SMRAM）中，對作業系統完全透明。UEFI 韌體使用 SMM 來處理需要高安全性的操作，例如韌體更新、電源管理和安全策略執行。SMM 透過 SMI（System Management Interrupt）觸發進入。</p>
         </div>
         <div class="info-card">
             <div class="info-icon comm-icon">C</div>
-            <h3 data-i18n="overview.why.title">Why SMM Communication?</h3>
-            <p  data-i18n="overview.why.desc"></p>
+            <h3>為什麼需要 SMM 通訊？</h3>
+            <p >DXE 驅動程式和作業系統無法直接存取 SMRAM，因此需要一個安全的通訊機制。EFI_SMM_COMMUNICATION_PROTOCOL 提供了標準化的方式，讓 DXE 環境可以向 SMM 中的處理器發送請求並接收回應，同時維持 SMM 的安全隔離性。</p>
         </div>
         <div class="info-card">
             <div class="info-icon mm-icon">M</div>
-            <h3 data-i18n="overview.standalone.title">What is Standalone MM?</h3>
-            <p  data-i18n="overview.standalone.desc"></p>
+            <h3>什麼是 Standalone MM？</h3>
+            <p >Standalone MM 是傳統 SMM 的進化版本。它不依賴 DXE 環境進行初始化，使用獨立的入口點（MM_STANDALONE），提供更好的安全隔離性。它同時支援 x86（SMM）和 ARM（TrustZone/OP-TEE）架構，使用統一的 EFI_MM_COMMUNICATION_PROTOCOL。</p>
         </div>
     </div>
 </section>
@@ -80,23 +76,23 @@
 <!-- SECTION : Memory Architecture                             -->
 <!-- ========================================================= -->
 <section id="architecture" class="section panel">
-    <h2 data-i18n="arch.title">Memory Architecture</h2>
-    <p class="section-subtitle" data-i18n="arch.subtitle">Memory regions involved in DXE-SMM communication</p>
+    <h2>記憶體架構</h2>
+    <p class="section-subtitle">DXE 與 SMM 通訊涉及的記憶體區域</p>
 
     <div id="arch-diagram" class="diagram-container"></div>
 
     <div class="arch-cards">
         <div class="arch-card dram-card">
-            <h3 data-i18n="arch.dram.title">Normal DRAM</h3>
-            <p  data-i18n="arch.dram.desc"></p>
+            <h3>一般 DRAM（DXE 可存取）</h3>
+            <p >DXE 驅動程式和作業系統可以自由存取的系統記憶體。通訊緩衝區位於此區域，因為 DXE 和 SMM 都需要能讀寫它。包含 DXE 驅動程式、UEFI 服務表和一般資料。</p>
         </div>
         <div class="arch-card smram-card">
-            <h3 data-i18n="arch.smram.title">SMRAM (TSEG)</h3>
-            <p  data-i18n="arch.smram.desc"></p>
+            <h3>SMRAM（SMM 專用）</h3>
+            <p >System Management RAM，僅在 SMM 模式下可存取。包含 SMM Core、已註冊的 SMI Handler 和 SMM 驅動程式。在 SmmReadyToLock 事件後被硬體鎖定，防止任何非 SMM 程式碼存取。通常位於 TSEG 區域。</p>
         </div>
         <div class="arch-card comm-card">
-            <h3 data-i18n="arch.comm.title">Communication Buffer</h3>
-            <p  data-i18n="arch.comm.desc"></p>
+            <h3>通訊緩衝區</h3>
+            <p >位於 SMRAM 之外的共享記憶體區域。DXE 驅動程式寫入請求資料，觸發 SMI 後 SMM Handler 讀取請求並寫回回應。SMM 會驗證此緩衝區的位址範圍，確保它不會指向 SMRAM 內部（防止安全漏洞）。</p>
         </div>
     </div>
 </section>
@@ -105,40 +101,40 @@
 <!-- SECTION : SMI Trigger Mechanism                           -->
 <!-- ========================================================= -->
 <section id="trigger" class="section panel">
-    <h2 data-i18n="trigger.title">MM Trigger Mechanism (SMI & MMI)</h2>
-    <p class="section-subtitle" data-i18n="trigger.subtitle">Understanding how platforms transition into Management Mode</p>
+    <h2>MM 觸發機制 (SMI & MMI)</h2>
+    <p class="section-subtitle">理解平台如何觸發並進入 Management Mode (x86 SMM 或 ARM StMM)</p>
 
     <div id="trigger-diagram" class="diagram-container" style="height: auto; min-height: 320px;"></div>
 
-    <h3 style="margin-bottom: 1rem; color: var(--text);" data-i18n="trigger.x86.title">x86 Architecture: SMI Trigger</h3>
+    <h3 style="margin-bottom: 1rem; color: var(--text);">x86 架構：SMI 觸發</h3>
     <div class="arch-cards">
         <div class="arch-card" style="background:var(--smm-bg); border-color:rgba(239,68,68,0.18);">
-            <h3 style="color:var(--smm-color);" data-i18n="trigger.swsmi.title">Software SMI</h3>
-            <p data-i18n="trigger.swsmi.desc"></p>
+            <h3 style="color:var(--smm-color);">軟體 SMI（SW SMI）</h3>
+            <p>透過向 I/O 埠 0xB2 寫入一個位元組值來觸發。這是 DXE 與 SMM 通訊最常用的方式。EFI_SMM_COMMUNICATION_PROTOCOL 的 Communicate() 函式內部就是透過寫入 0xB2 來觸發 SMI。</p>
         </div>
         <div class="arch-card" style="background:var(--cpu-bg); border-color:rgba(167,139,250,0.18);">
-            <h3 style="color:var(--cpu-color);" data-i18n="trigger.hwsmi.title">Hardware SMI</h3>
-            <p data-i18n="trigger.hwsmi.desc"></p>
+            <h3 style="color:var(--cpu-color);">硬體 SMI</h3>
+            <p>由硬體事件觸發，例如 GPIO 變化、電源按鈕按下或 ACPI Timer 溢位。這些 SMI 由晶片組產生，CPU 自動回應並強制進入 SMM。</p>
         </div>
         <div class="arch-card" style="background:var(--mm-bg); border-color:rgba(34,211,238,0.18);">
-            <h3 style="color:var(--mm-color);" data-i18n="trigger.entry.title">SMM Entry Flow</h3>
-            <p data-i18n="trigger.entry.desc"></p>
+            <h3 style="color:var(--mm-color);">SMM 進入流程</h3>
+            <p>當 SMI 觸發時：① 所有 CPU 核心收到 SMI 信號 ② 暫存器狀態存入 SMRAM 的 Save State Area ③ 跳轉至 SMBASE + 0x8000 ④ BSP 執行 SMM Core，AP 進入等待 ⑤ 執行 RSM 返回。</p>
         </div>
     </div>
 
-    <h3 style="margin: 2rem 0 1rem; color: var(--text);" data-i18n="trigger.arm.title">ARM Architecture: MMI & Standalone MM</h3>
+    <h3 style="margin: 2rem 0 1rem; color: var(--text);">ARM 架構：MMI (Management Mode Interrupt) 與 StMM</h3>
     <div class="arch-cards">
         <div class="arch-card" style="background:var(--smm-bg); border-color:rgba(239,68,68,0.18);">
-            <h3 style="color:var(--smm-color);" data-i18n="trigger.smc.title">Sync MMI (SMC)</h3>
-            <p data-i18n="trigger.smc.desc"></p>
+            <h3 style="color:var(--smm-color);">同步 MMI (SMC 呼叫)</h3>
+            <p>ARM 平台透過執行 SMC (Secure Monitor Call) 指令主動觸發。這對應於 x86 的 SW SMI，用於正常執行流中的 DXE-to-MM 通訊請求，請求會先進入 EL3，再由 Trusted Firmware 轉發給 S-EL0 的 StMM。</p>
         </div>
         <div class="arch-card" style="background:var(--cpu-bg); border-color:rgba(167,139,250,0.18);">
-            <h3 style="color:var(--cpu-color);" data-i18n="trigger.asyncmmi.title">Async MMI (Hardware)</h3>
-            <p data-i18n="trigger.asyncmmi.desc"></p>
+            <h3 style="color:var(--cpu-color);">非同步 MMI (硬體中斷)</h3>
+            <p>由硬體事件產生的安全中斷 (FIQ/IRQ)，由中斷控制器 (GIC) 發送給 CPU。GIC 將此中斷標記為 Secure Group，導致 CPU 陷入 EL3 並路由給 SPM (Secure Partition Manager) 處理。</p>
         </div>
         <div class="arch-card" style="background:var(--mm-bg); border-color:rgba(34,211,238,0.18);">
-            <h3 style="color:var(--mm-color);" data-i18n="trigger.stmm_entry.title">StMM Entry Flow</h3>
-            <p data-i18n="trigger.stmm_entry.desc"></p>
+            <h3 style="color:var(--mm-color);">StMM 進入流程 (EL3 -> S-EL0)</h3>
+            <p>① 觸發 SMC 或硬體安全中斷 ② CPU 陷入最高安全層級 EL3 (TF-A) ③ TF-A 的 SPM 將上下文切換到 Secure World ④ 降級進入 S-EL0 執行 Standalone MM Core ⑤ 處理完成後經 SMC 返回 EL3 再回到 Non-Secure EL1/EL2。</p>
         </div>
     </div>
 </section>
@@ -147,8 +143,8 @@
 <!-- SECTION : Communication Flow (interactive step-by-step)   -->
 <!-- ========================================================= -->
 <section id="flow" class="section panel">
-    <h2 data-i18n="flow.title">Communication Flow</h2>
-    <p class="section-subtitle" data-i18n="flow.subtitle">Step-by-step walkthrough of DXE-SMM communication</p>
+    <h2>通訊流程</h2>
+    <p class="section-subtitle">逐步了解 DXE 與 MM 的完整通訊過程</p>
 
     <div class="step-controls">
         <button id="flow-prev" class="step-btn" disabled>&larr; Prev</button>
@@ -170,33 +166,33 @@
 <!-- SECTION : Communication Buffer Internals                  -->
 <!-- ========================================================= -->
 <section id="buffer" class="section panel">
-    <h2 data-i18n="buffer.title">Communication Buffer Internals</h2>
-    <p class="section-subtitle" data-i18n="buffer.subtitle">Understanding the EFI_MM_COMMUNICATE_HEADER structure</p>
+    <h2>通訊緩衝區內部結構</h2>
+    <p class="section-subtitle">理解 EFI_MM_COMMUNICATE_HEADER 的結構和用途</p>
 
-    <p class="buffer-intro" data-i18n="buffer.desc"></p>
+    <p class="buffer-intro">通訊緩衝區使用 EFI_MM_COMMUNICATE_HEADER (傳統為 EFI_SMM_COMMUNICATE_HEADER) 結構，這是 DXE 和 MM 之間交換資料的標準格式。HeaderGuid 用於路由請求到正確的 Handler，MessageLength 指定 Data 區域的大小，Data 包含實際的請求和回應負載。</p>
 
     <div class="struct-box">
-        <code data-i18n="buffer.struct">EFI_MM_COMMUNICATE_HEADER { HeaderGuid, MessageLength, Data[] }</code>
+        <code>EFI_MM_COMMUNICATE_HEADER { HeaderGuid, MessageLength, Data[] }</code>
     </div>
 
     <div id="buffer-diagram" class="diagram-container"></div>
 
     <div class="buffer-cards">
         <div class="buffer-card">
-            <h3 data-i18n="buffer.guid.title">HeaderGuid</h3>
-            <p  data-i18n="buffer.guid.desc"></p>
+            <h3>HeaderGuid（EFI_GUID，16 位元組）</h3>
+            <p >唯一識別目標 SMI Handler。SMM Core 用此 GUID 在已註冊的 Handler 列表中搜尋匹配的處理器。每個 SMM 驅動程式在呼叫 SmiHandlerRegister() 時指定自己的 GUID。</p>
         </div>
         <div class="buffer-card">
-            <h3 data-i18n="buffer.len.title">MessageLength</h3>
-            <p  data-i18n="buffer.len.desc"></p>
+            <h3>MessageLength（UINTN，4/8 位元組）</h3>
+            <p >指定 Data[] 區域的大小（位元組數）。SMM Core 使用此值來確定整個緩衝區的總大小：sizeof(EFI_GUID) + sizeof(UINTN) + MessageLength。Handler 也用此值驗證資料完整性。</p>
         </div>
         <div class="buffer-card">
-            <h3 data-i18n="buffer.data.title">Data[]</h3>
-            <p  data-i18n="buffer.data.desc"></p>
+            <h3>Data[]（可變長度）</h3>
+            <p >實際的請求/回應負載。格式由具體的 SMI Handler 定義。DXE 寫入請求時填入，Handler 處理後將回應寫回同一位置。緩衝區必須位於 SMRAM 之外，且 SMM 會驗證位址範圍的合法性。</p>
         </div>
         <div class="buffer-card">
-            <h3 data-i18n="buffer.validation.title">Buffer Validation</h3>
-            <p  data-i18n="buffer.validation.desc"></p>
+            <h3>緩衝區驗證</h3>
+            <p >SMM Core 在處理通訊緩衝區前會進行嚴格驗證：① 檢查緩衝區位址是否在 SMRAM 範圍之外 ② 確認 MessageLength 不會造成整數溢位 ③ 驗證整個緩衝區（Header + Data）都不與 SMRAM 重疊。這是為了防止攻擊者利用精心構造的緩衝區來讀寫 SMRAM 內容。</p>
         </div>
     </div>
 </section>
@@ -205,28 +201,28 @@
 <!-- SECTION : Handler Registration                            -->
 <!-- ========================================================= -->
 <section id="handler" class="section panel">
-    <h2 data-i18n="handler.title">MM Handler Registration (SMI & MMI)</h2>
-    <p class="section-subtitle" data-i18n="handler.subtitle">How SMM/MM drivers register handlers for dispatch</p>
+    <h2>MM 處理器註冊機制 (SMI & MMI)</h2>
+    <p class="section-subtitle">理解 SMM/MM 驅動程式如何註冊 Handler 來處理通訊請求</p>
 
     <div class="arch-cards">
         <div class="arch-card" style="background:var(--smm-bg); border-color:rgba(239,68,68,0.18);">
-            <h3 style="color:var(--smm-color);" data-i18n="handler.guid.title">GUID-Based Handler</h3>
-            <p data-i18n="handler.guid.desc"></p>
+            <h3 style="color:var(--smm-color);">GUID-Based Handler（通訊協定用）</h3>
+            <p>使用 SmiHandlerRegister() 或 MmiHandlerRegister() 註冊，綁定特定的 GUID。這是 DXE-MM 通訊的標準跨平台(x86/ARM)方式。當 DXE 發送帶有匹配 GUID 的請求時，MM Core 會分派到此 Handler。</p>
         </div>
         <div class="arch-card" style="background:var(--comm-bg); border-color:rgba(251,191,36,0.18);">
-            <h3 style="color:var(--comm-color);" data-i18n="handler.sw.title">Hardware/Software specific Handler</h3>
-            <p data-i18n="handler.sw.desc"></p>
+            <h3 style="color:var(--comm-color);">硬體/軟體特定 Handler</h3>
+            <p>在 x86 上通常使用 EFI_SMM_SW_DISPATCH2_PROTOCOL 註冊，綁定特定的 SW SMI 號碼；在 ARM 上可能綁定特定硬體中斷。通常用於 ACPI/ASL 程式碼或硬體事件觸發。</p>
         </div>
         <div class="arch-card" style="background:var(--cpu-bg); border-color:rgba(167,139,250,0.18);">
-            <h3 style="color:var(--cpu-color);" data-i18n="handler.root.title">Root MM Handler</h3>
-            <p data-i18n="handler.root.desc"></p>
+            <h3 style="color:var(--cpu-color);">Root MM Handler</h3>
+            <p>使用 SmiHandlerRegister/MmiHandlerRegister 但 GUID 設為 NULL 來註冊。每次 SMI/MMI 觸發時都會被呼叫，不論來源。用於需要處理所有事件的情況，如效能監控或全域除錯。</p>
         </div>
     </div>
 
     <div class="buffer-cards" style="margin-top:28px;">
         <div class="buffer-card" style="grid-column: 1 / -1;">
-            <h3 data-i18n="handler.lifecycle.title">MM Driver Lifecycle & Dispatch (SmiManage / MmiManage)</h3>
-            <p  data-i18n="handler.lifecycle.desc"></p>
+            <h3>MM 驅動程式生命週期與分派 (SmiManage / MmiManage)</h3>
+            <p >驅動程式在啟動階段載入安全記憶體後，透過入口點使用 gSmst 或 gMmst 註冊 Handler。當 MM 事件觸發時，MM Core 透過 SmiManage() 或 MmiManage() 遍歷註冊清單，找到對應的 Handler 並分派執行。</p>
         </div>
     </div>
 </section>
@@ -235,16 +231,16 @@
 <!-- SECTION : Standalone MM vs Traditional MM                 -->
 <!-- ========================================================= -->
 <section id="standalone" class="section panel">
-    <h2 data-i18n="standalone.title">Standalone MM vs Traditional MM</h2>
-    <p class="section-subtitle" data-i18n="standalone.subtitle">Understanding the differences</p>
+    <h2>Standalone MM 與傳統 MM 比較</h2>
+    <p class="section-subtitle">理解兩種 MM 架構的差異和各自的優勢</p>
 
     <div class="compare-grid">
         <div class="compare-card traditional">
-            <h3 data-i18n="standalone.traditional.title">Traditional MM</h3>
+            <h3>傳統 MM（Traditional MM）</h3>
             <ul id="traditional-list"></ul>
         </div>
         <div class="compare-card standalone">
-            <h3 data-i18n="standalone.standalone.title">Standalone MM</h3>
+            <h3>Standalone MM</h3>
             <ul id="standalone-list"></ul>
         </div>
     </div>
@@ -254,14 +250,14 @@
 <!-- SECTION : Code Deep-Dive                                  -->
 <!-- ========================================================= -->
 <section id="code" class="section panel">
-    <h2 data-i18n="code.title">Key Code Analysis</h2>
-    <p class="section-subtitle" data-i18n="code.subtitle">Core SMM communication implementation in EDK2</p>
+    <h2>關鍵程式碼解析</h2>
+    <p class="section-subtitle">EDK2 中 SMM/MM 通訊的核心實作</p>
 
     <div class="code-blocks">
         <!-- block 1 -->
         <div class="code-block">
-            <h3 data-i18n="code.communicate.title">Communicate() / MmCommunicate()</h3>
-            <p  data-i18n="code.communicate.desc"></p>
+            <h3>Communicate() / MmCommunicate()</h3>
+            <p >DXE 端的通訊入口函式，由 MM IPL 實作。驗證參數後觸發軟體陷阱（如 SW SMI 或 SMC）。</p>
             <pre><code>// MdeModulePkg/Core/PiSmmIpl/PiSmmIpl.c
 EFI_STATUS
 EFIAPI
@@ -300,8 +296,8 @@ SmmCommunicationCommunicate (
 
         <!-- block 2 -->
         <div class="code-block">
-            <h3 data-i18n="code.entrypoint.title">MmEntryPoint() / SmmEntryPoint()</h3>
-            <p  data-i18n="code.entrypoint.desc"></p>
+            <h3>MmEntryPoint() / SmmEntryPoint()</h3>
+            <p >MM 的進入點，CPU 從陷阱進入安全模式後執行的第一個高階函式。</p>
             <pre><code>// MdeModulePkg/Core/PiSmmCore/PiSmmCore.c (or StandaloneMmCore)
 VOID
 EFIAPI
@@ -345,8 +341,8 @@ SmmEntryPoint (
 
         <!-- block 3 -->
         <div class="code-block">
-            <h3 data-i18n="code.smimanage.title">MmiManage() / SmiManage()</h3>
-            <p  data-i18n="code.smimanage.desc"></p>
+            <h3>MmiManage() / SmiManage()</h3>
+            <p >MM Core 的核心分派函式，根據 GUID 找到並呼叫對應的 Handler。</p>
             <pre><code>// MdeModulePkg/Core/PiSmmCore/Smi.c (or StandaloneMmPkg Mmi.c)
 EFI_STATUS
 EFIAPI
@@ -392,8 +388,8 @@ SmiManage ( // Or MmiManage
 
         <!-- block 4 -->
         <div class="code-block">
-            <h3 data-i18n="code.register.title">MmiHandlerRegister() Example</h3>
-            <p  data-i18n="code.register.desc"></p>
+            <h3>MmiHandlerRegister() 範例</h3>
+            <p >MM 驅動程式如何註冊一個 GUID-based Handler。</p>
             <pre><code>// Example MM Driver registering a communication handler
 #include &lt;Protocol/MmCommunication.h&gt;
 
@@ -465,25 +461,25 @@ MyDriverEntryPoint (
 <!-- SECTION : References                                      -->
 <!-- ========================================================= -->
 <section id="references" class="section panel">
-    <h2 data-i18n="ref.title">References</h2>
-    <p class="section-subtitle" data-i18n="ref.subtitle">Resources for deeper learning</p>
+    <h2>參考資源</h2>
+    <p class="section-subtitle">深入了解 SMM 通訊的學習資源</p>
 
     <div class="ref-grid">
         <a class="ref-card" href="https://uefi.org/specifications" target="_blank" rel="noopener">
-            <h3 data-i18n="ref.spec">PI Specification</h3>
-            <p  data-i18n="ref.spec.desc"></p>
+            <h3>PI Specification</h3>
+            <p >UEFI PI 規格書 Volume 4：System Management Mode Core Interface</p>
         </a>
         <a class="ref-card" href="https://github.com/tianocore/edk2/tree/master/MdeModulePkg/Core/PiSmmCore" target="_blank" rel="noopener">
-            <h3 data-i18n="ref.edk2">EDK2 SMM Core Source</h3>
-            <p  data-i18n="ref.edk2.desc"></p>
+            <h3>EDK2 SMM Core 原始碼</h3>
+            <p >MdeModulePkg/Core/PiSmmCore — SMM Core 分派器實作</p>
         </a>
         <a class="ref-card" href="https://github.com/tianocore/edk2/tree/master/MdeModulePkg/Core/PiSmmIpl" target="_blank" rel="noopener">
-            <h3 data-i18n="ref.ipl">PiSmmIpl Source</h3>
-            <p  data-i18n="ref.ipl.desc"></p>
+            <h3>PiSmmIpl 原始碼</h3>
+            <p >MdeModulePkg/Core/PiSmmIpl — SMM 通訊協定實作</p>
         </a>
         <a class="ref-card" href="https://github.com/tianocore/edk2/tree/master/StandaloneMmPkg" target="_blank" rel="noopener">
-            <h3 data-i18n="ref.standalone">Standalone MM Core</h3>
-            <p  data-i18n="ref.standalone.desc"></p>
+            <h3>Standalone MM Core</h3>
+            <p >StandaloneMmPkg — Standalone MM Core 和基礎建設</p>
         </a>
     </div>
 </section>
@@ -496,8 +492,6 @@ MyDriverEntryPoint (
     </p>
     <p style="margin-top:12px;">&copy; 2025 Damien Chen. All rights reserved.</p>
 </footer>
-
-<script src="i18n.js"></script>
 <script src="script.js"></script>
 <script src="../common/back-to-top.js" defer></script>
 <script src="../common/copy-code.js" defer></script>

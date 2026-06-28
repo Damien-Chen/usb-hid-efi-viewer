@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UEFI Protocol Services 視覺化</title>
+    <title>UEFI Protocol 服務視覺化</title>
     <meta name="description" content="Interactive visualization of UEFI EDK2 Protocol Services: OpenProtocol, HandleProtocol, LocateProtocol, LocateHandleBuffer — internal data structures, step-by-step flows, and attribute comparison.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="i18n.js"></script>
 </head>
 <body>
     <div class="bg-orb orb-a"></div>
@@ -17,25 +16,21 @@
 
     <nav class="top-nav">
         <div class="brand">
-            <a href="../index.html" class="back-link" data-i18n="nav.back">&larr; Back to Tools</a>
-            <span data-i18n="page.title">UEFI Protocol Services Visualizer</span>
+            <a href="../index.html" class="back-link">← 返回工具列表</a>
+            <span>UEFI Protocol 服務視覺化</span>
         </div>
         <ul class="nav-links">
-            <li><a class="nav-link active" href="#overview"    data-i18n="nav.overview">Overview</a></li>
-            <li><a class="nav-link"        href="#structs"     data-i18n="nav.structs">Data Structures</a></li>
-            <li><a class="nav-link"        href="#open"        data-i18n="nav.open">OpenProtocol</a></li>
-            <li><a class="nav-link"        href="#attributes"  data-i18n="nav.attributes">Attributes</a></li>
-            <li><a class="nav-link"        href="#handlep"     data-i18n="nav.handle">HandleProtocol</a></li>
-            <li><a class="nav-link"        href="#locate"      data-i18n="nav.locate">LocateProtocol</a></li>
-            <li><a class="nav-link"        href="#locatebuf"   data-i18n="nav.locatebuf">LocateHandleBuffer</a></li>
-            <li><a class="nav-link"        href="#patterns"    data-i18n="nav.patterns">Patterns</a></li>
-            <li><a class="nav-link"        href="#code"        data-i18n="nav.code">Code</a></li>
-            <li><a class="nav-link"        href="#references"  data-i18n="nav.references">References</a></li>
+            <li><a class="nav-link active" href="#overview"   >概述</a></li>
+            <li><a class="nav-link"        href="#structs"    >資料結構</a></li>
+            <li><a class="nav-link"        href="#open"       >OpenProtocol</a></li>
+            <li><a class="nav-link"        href="#attributes" >屬性比較</a></li>
+            <li><a class="nav-link"        href="#handlep"    >HandleProtocol</a></li>
+            <li><a class="nav-link"        href="#locate"     >LocateProtocol</a></li>
+            <li><a class="nav-link"        href="#locatebuf"  >LocateHandleBuffer</a></li>
+            <li><a class="nav-link"        href="#patterns"   >常見模式</a></li>
+            <li><a class="nav-link"        href="#code"       >程式碼解析</a></li>
+            <li><a class="nav-link"        href="#references" >參考資源</a></li>
         </ul>
-        <div class="lang-switcher">
-            <button class="lang-btn" data-lang="zh-TW" title="繁體中文">中文</button>
-            <button class="lang-btn" data-lang="en"    title="English">EN</button>
-        </div>
     </nav>
 
     <main class="page">
@@ -44,20 +39,20 @@
         <!--  Section 1: Overview / Hero                                -->
         <!-- ══════════════════════════════════════════════════════════ -->
         <header id="overview" class="section hero">
-            <p class="eyebrow" data-i18n="nav.overview">Overview</p>
-            <h1 data-i18n="overview.title">UEFI Protocol Services 概述</h1>
-            <p class="hero-desc" data-i18n="overview.subtitle">理解 EDK2 中如何存取和查詢 Handle Database 上的 Protocol 介面</p>
+            <p class="eyebrow">概述</p>
+            <h1>UEFI Protocol Services 概述</h1>
+            <p class="hero-desc">理解 EDK2 中如何存取和查詢 Handle Database 上的 Protocol 介面</p>
 
             <div class="card-grid">
                 <div class="card">
                     <div class="card-icon">🔍</div>
-                    <h3 data-i18n="overview.what.title">什麼是 Protocol Services？</h3>
-                    <p data-i18n="overview.what.desc"></p>
+                    <h3>什麼是 Protocol Services？</h3>
+                    <p>Protocol Services 是 UEFI Boot Services Table 中一組用來發現和存取 Protocol 介面的 API。它們是驅動程式與硬體、驅動程式與驅動程式之間溝通的核心橋樑。每個 Protocol 以 GUID 識別，安裝在 Handle 上，透過這些服務讀取。</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">❓</div>
-                    <h3 data-i18n="overview.why.title">為什麼有 4 個不同的函式？</h3>
-                    <p data-i18n="overview.why.desc"></p>
+                    <h3>為什麼有 4 個不同的函式？</h3>
+                    <p>EFI 1.0 僅有 HandleProtocol；UEFI 2.0 引入了 OpenProtocol 以支援驅動程式模型的排他性開啟與追蹤機制。LocateProtocol 簡化了查找系統全域單例（singleton）協定的流程，而 LocateHandleBuffer 提供了一次取得所有匹配 Handle 的便利方式。四個函式在不同場景各有最佳用途。</p>
                 </div>
             </div>
 
@@ -65,20 +60,20 @@
                 <h2 style="font-family: var(--head); font-size:1.1rem; font-weight:600; color:var(--text); text-align:center; margin-bottom:20px;">Protocol Services API</h2>
                 <div class="fn-grid">
                     <div class="fn-card fn-open">
-                        <h3 data-i18n="overview.open.title">OpenProtocol</h3>
-                        <p data-i18n="overview.open.desc"></p>
+                        <h3>OpenProtocol</h3>
+                        <p>最完整的協定存取函式。支援 6 種開啟屬性（Attributes），可追蹤誰開啟了哪個協定，支援排他性存取和衝突偵測。UEFI 驅動程式模型的標準用法。</p>
                     </div>
                     <div class="fn-card fn-handlep">
-                        <h3 data-i18n="overview.handle.title">HandleProtocol</h3>
-                        <p data-i18n="overview.handle.desc"></p>
+                        <h3>HandleProtocol</h3>
+                        <p>EFI 1.0 的簡化版。等同於 OpenProtocol 加 BY_HANDLE_PROTOCOL 屬性。無法追蹤開啟者身份，不建議在 UEFI 驅動程式模型中使用。</p>
                     </div>
                     <div class="fn-card fn-locate">
-                        <h3 data-i18n="overview.locate.title">LocateProtocol</h3>
-                        <p data-i18n="overview.locate.desc"></p>
+                        <h3>LocateProtocol</h3>
+                        <p>在整個 Handle Database 中找到第一個安裝了指定 GUID 協定的 Handle，直接返回 Interface 指標。最適合查找系統全域的單例協定。</p>
                     </div>
                     <div class="fn-card fn-locatebuf">
-                        <h3 data-i18n="overview.locatebuf.title">LocateHandleBuffer</h3>
-                        <p data-i18n="overview.locatebuf.desc"></p>
+                        <h3>LocateHandleBuffer</h3>
+                        <p>找出所有安裝了指定協定的 Handle，配置並回傳一個 EFI_HANDLE 陣列。呼叫者必須 FreePool 回傳的緩衝區。用於列舉所有符合條件的設備。</p>
                     </div>
                 </div>
             </div>
@@ -89,8 +84,8 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="structs" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="structs.title">核心資料結構</h2>
-                <p data-i18n="structs.subtitle"></p>
+                <h2>核心資料結構</h2>
+                <p>理解 DXE Core 如何在記憶體中追蹤協定的開啟記錄</p>
             </div>
 
             <div class="struct-grid">
@@ -100,31 +95,31 @@
                         <span class="struct-name">OPEN_PROTOCOL_DATA</span>
                         <span class="struct-sig">'op'</span>
                     </div>
-                    <div class="struct-desc" data-i18n="structs.opd.desc"></div>
+                    <div class="struct-desc">每次 OpenProtocol 呼叫（除 TEST_PROTOCOL 外）都會建立一筆 OPEN_PROTOCOL_DATA 記錄，掛在 PROTOCOL_INTERFACE.OpenList 上。它記錄了「誰（AgentHandle）」以「哪種模式（Attributes）」開啟了這個協定介面，以及「在哪個控制器（ControllerHandle）」的上下文中。</div>
                     <div class="struct-fields">
                         <div class="struct-field">
                             <span class="field-name">Signature</span>
-                            <span class="field-desc" data-i18n="structs.opd.sig"></span>
+                            <span class="field-desc">Signature：驗證用魔法數字</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Link</span>
-                            <span class="field-desc" data-i18n="structs.opd.link"></span>
+                            <span class="field-desc">Link：連接到 PROTOCOL_INTERFACE.OpenList 的 LIST_ENTRY</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">AgentHandle</span>
-                            <span class="field-desc" data-i18n="structs.opd.agent"></span>
+                            <span class="field-desc">AgentHandle：開啟此協定的驅動程式映像句柄</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">ControllerHandle</span>
-                            <span class="field-desc" data-i18n="structs.opd.ctrl"></span>
+                            <span class="field-desc">ControllerHandle：被管理的控制器句柄（BY_DRIVER 時使用）</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Attributes</span>
-                            <span class="field-desc" data-i18n="structs.opd.attr"></span>
+                            <span class="field-desc">Attributes：開啟模式（BY_DRIVER, EXCLUSIVE, BY_CHILD_CONTROLLER 等）</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">OpenCount</span>
-                            <span class="field-desc" data-i18n="structs.opd.cnt"></span>
+                            <span class="field-desc">OpenCount：參考計數</span>
                         </div>
                     </div>
                 </div>
@@ -135,11 +130,11 @@
                         <span class="struct-name">PROTOCOL_INTERFACE</span>
                         <span class="struct-sig">'pi'</span>
                     </div>
-                    <div class="struct-desc" data-i18n="structs.pi.desc"></div>
+                    <div class="struct-desc">PROTOCOL_INTERFACE 代表「某個 Handle 上安裝了某個協定」的記錄。其 OpenList 欄位是所有開啟此協定的消費者追蹤串列的頭部。</div>
                     <div class="struct-fields">
                         <div class="struct-field">
                             <span class="field-name">OpenList</span>
-                            <span class="field-desc" data-i18n="structs.pi.openlist"></span>
+                            <span class="field-desc">OpenList：所有 OPEN_PROTOCOL_DATA 記錄組成的串列頭部</span>
                         </div>
                     </div>
                 </div>
@@ -147,8 +142,8 @@
 
             <!-- Relationship diagram -->
             <div class="diagram-wrap" style="margin-top:40px;">
-                <div class="diagram-title" data-i18n="structs.diagram.title">OpenProtocol 追蹤鏈</div>
-                <div class="diagram-desc" data-i18n="structs.diagram.desc"></div>
+                <div class="diagram-title">OpenProtocol 追蹤鏈</div>
+                <div class="diagram-desc">IHANDLE.Protocols → PROTOCOL_INTERFACE → OPEN_PROTOCOL_DATA 鏈。DXE Core 透過此鏈確認哪些驅動程式正在使用哪些協定，並在 DisconnectController 時據此決定需要 Stop 哪些驅動程式。</div>
                 <div id="structs-diagram-container"></div>
             </div>
         </section>
@@ -158,15 +153,15 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="open" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="open.title">OpenProtocol 逐步流程</h2>
-                <p data-i18n="open.subtitle"></p>
+                <h2>OpenProtocol 逐步流程</h2>
+                <p>觀察 DXE Core 如何處理每種開啟屬性，以及 OPEN_PROTOCOL_DATA 如何被建立</p>
             </div>
 
             <div class="step-controls">
-                <button id="open-prev" class="step-btn" disabled data-i18n="btn.prev">&larr; 上一步</button>
+                <button id="open-prev" class="step-btn" disabled>← 上一步</button>
                 <span id="open-indicator" class="step-indicator">1 / 8</span>
-                <button id="open-next" class="step-btn" data-i18n="btn.next">下一步 &rarr;</button>
-                <button id="open-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                <button id="open-next" class="step-btn">下一步 →</button>
+                <button id="open-reset" class="step-btn reset-btn">重置</button>
             </div>
 
             <div id="open-description" class="step-description">
@@ -185,8 +180,8 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="attributes" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="attr.title">OpenProtocol 六種屬性完整比較</h2>
-                <p data-i18n="attr.subtitle"></p>
+                <h2>OpenProtocol 六種屬性完整比較</h2>
+                <p>每種屬性的行為差異、追蹤記錄、排他性、及典型使用場景</p>
             </div>
 
             <div class="attr-table-wrap">
@@ -201,15 +196,15 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="handlep" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="handlep.title">HandleProtocol — 簡化包裝</h2>
-                <p data-i18n="handlep.subtitle"></p>
+                <h2>HandleProtocol — 簡化包裝</h2>
+                <p>理解 HandleProtocol 是 OpenProtocol 的 Legacy 封裝</p>
             </div>
 
-            <p style="font-size:0.95rem; color:var(--muted); line-height:1.7; margin-bottom:20px;" data-i18n="handlep.desc"></p>
+            <p style="font-size:0.95rem; color:var(--muted); line-height:1.7; margin-bottom:20px;">HandleProtocol() 是 EFI 1.0 原始 API。在 UEFI 2.x 中，它的內部實作僅是對 OpenProtocol() 的一層薄包裝，使用 BY_HANDLE_PROTOCOL 屬性。</p>
 
             <div class="equiv-box">
-                <h3 data-i18n="handlep.equiv">等效呼叫</h3>
-                <p data-i18n="handlep.equiv.desc"></p>
+                <h3>等效呼叫</h3>
+                <p>HandleProtocol(Handle, Protocol, &Interface) 在 DXE Core 內部等同於：OpenProtocol(Handle, Protocol, &Interface, gDxeCoreImageHandle, NULL, EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL)</p>
                 <code>// HandleProtocol(Handle, Protocol, &Interface)
 // is internally equivalent to:
 OpenProtocol(
@@ -223,8 +218,8 @@ OpenProtocol(
             </div>
 
             <div class="warn-box">
-                <h3 data-i18n="handlep.warn.title">為什麼不建議在驅動程式中使用？</h3>
-                <p data-i18n="handlep.warn.desc"></p>
+                <h3>為什麼不建議在驅動程式中使用？</h3>
+                <p>HandleProtocol 不提供 AgentHandle/ControllerHandle 追蹤資訊。DisconnectController 無法識別協定的使用者，導致系統在嘗試拆除驅動程式綁定時，無法正確通知相關驅動程式執行清理。在 UEFI 驅動程式模型中，應始終使用 OpenProtocol(BY_DRIVER)。</p>
             </div>
         </section>
 
@@ -233,15 +228,15 @@ OpenProtocol(
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="locate" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="locp.title">LocateProtocol 逐步流程</h2>
-                <p data-i18n="locp.subtitle"></p>
+                <h2>LocateProtocol 逐步流程</h2>
+                <p>觀察 DXE Core 如何在 gProtocolDatabase 中找到第一個匹配的協定實例</p>
             </div>
 
             <div class="step-controls">
-                <button id="loc-prev" class="step-btn" disabled data-i18n="btn.prev">&larr; 上一步</button>
+                <button id="loc-prev" class="step-btn" disabled>← 上一步</button>
                 <span id="loc-indicator" class="step-indicator">1 / 4</span>
-                <button id="loc-next" class="step-btn" data-i18n="btn.next">下一步 &rarr;</button>
-                <button id="loc-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                <button id="loc-next" class="step-btn">下一步 →</button>
+                <button id="loc-reset" class="step-btn reset-btn">重置</button>
             </div>
 
             <div id="loc-description" class="step-description locate-step">
@@ -260,15 +255,15 @@ OpenProtocol(
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="locatebuf" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="locbuf.title">LocateHandleBuffer 逐步流程</h2>
-                <p data-i18n="locbuf.subtitle"></p>
+                <h2>LocateHandleBuffer 逐步流程</h2>
+                <p>觀察 DXE Core 如何收集所有符合條件的 Handle 並配置回傳緩衝區</p>
             </div>
 
             <div class="step-controls">
-                <button id="buf-prev" class="step-btn" disabled data-i18n="btn.prev">&larr; 上一步</button>
+                <button id="buf-prev" class="step-btn" disabled>← 上一步</button>
                 <span id="buf-indicator" class="step-indicator">1 / 5</span>
-                <button id="buf-next" class="step-btn" data-i18n="btn.next">下一步 &rarr;</button>
-                <button id="buf-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                <button id="buf-next" class="step-btn">下一步 →</button>
+                <button id="buf-reset" class="step-btn reset-btn">重置</button>
             </div>
 
             <div id="buf-description" class="step-description locbuf-step">
@@ -287,30 +282,30 @@ OpenProtocol(
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="patterns" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="patterns.title">常見使用模式</h2>
-                <p data-i18n="patterns.subtitle"></p>
+                <h2>常見使用模式</h2>
+                <p>BIOS 工程師在日常開發中最常用的協定服務模式</p>
             </div>
 
             <div class="pattern-grid">
                 <div class="pattern-card">
-                    <h4 data-i18n="patterns.supported.title">Supported() 檢查模式</h4>
-                    <p data-i18n="patterns.supported.desc"></p>
+                    <h4>Supported() 檢查模式</h4>
+                    <p>在 Supported() 中用 OpenProtocol(BY_DRIVER) 嘗試開啟目標協定，檢查設備屬性後立即 CloseProtocol()。必須為冪等操作，不改變任何狀態。</p>
                 </div>
                 <div class="pattern-card">
-                    <h4 data-i18n="patterns.start.title">Start() 綁定模式</h4>
-                    <p data-i18n="patterns.start.desc"></p>
+                    <h4>Start() 綁定模式</h4>
+                    <p>在 Start() 中用 OpenProtocol(BY_DRIVER) 正式取得排他性存取權，初始化硬體，安裝新協定。BY_DRIVER 確保不會有其他驅動程式同時管理此控制器。</p>
                 </div>
                 <div class="pattern-card">
-                    <h4 data-i18n="patterns.singleton.title">單例查找模式</h4>
-                    <p data-i18n="patterns.singleton.desc"></p>
+                    <h4>單例查找模式</h4>
+                    <p>使用 LocateProtocol() 查找系統全域的單例協定，如 EFI_VARIABLE_ARCH_PROTOCOL、EFI_SMM_COMMUNICATION_PROTOCOL。這些協定在系統中只有一個實例。</p>
                 </div>
                 <div class="pattern-card">
-                    <h4 data-i18n="patterns.enumerate.title">設備列舉模式</h4>
-                    <p data-i18n="patterns.enumerate.desc"></p>
+                    <h4>設備列舉模式</h4>
+                    <p>使用 LocateHandleBuffer(ByProtocol) 取得所有匹配的 Handle，然後對每個 Handle 呼叫 OpenProtocol 取得 Interface。常用於在啟動管理器中列舉所有 Block IO 裝置。</p>
                 </div>
                 <div class="pattern-card">
-                    <h4 data-i18n="patterns.buschild.title">匯流排子句柄模式</h4>
-                    <p data-i18n="patterns.buschild.desc"></p>
+                    <h4>匯流排子句柄模式</h4>
+                    <p>匯流排驅動程式在子句柄上使用 OpenProtocol(BY_CHILD_CONTROLLER) 開啟父句柄的協定，建立親子關係追蹤。DisconnectController 據此知道需先停止子句柄。</p>
                 </div>
             </div>
         </section>
@@ -320,28 +315,28 @@ OpenProtocol(
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="code" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="code.title">關鍵程式碼解析</h2>
-                <p data-i18n="code.subtitle"></p>
+                <h2>關鍵程式碼解析</h2>
+                <p>EDK2 DXE Core 中實作協定服務的核心原始碼</p>
             </div>
 
             <div class="code-tabs">
-                <button class="code-tab active" data-tab="open"    data-i18n="code.open.title">CoreOpenProtocol()</button>
-                <button class="code-tab"        data-tab="locate"  data-i18n="code.locate.title">CoreLocateProtocol()</button>
-                <button class="code-tab"        data-tab="locbuf"  data-i18n="code.locbuf.title">CoreLocateHandleBuffer()</button>
+                <button class="code-tab active" data-tab="open"   >CoreOpenProtocol() 核心邏輯</button>
+                <button class="code-tab"        data-tab="locate" >CoreLocateProtocol() 核心邏輯</button>
+                <button class="code-tab"        data-tab="locbuf" >CoreLocateHandleBuffer() 核心邏輯</button>
             </div>
 
             <div class="code-pane active" id="pane-open">
-                <div class="code-file-label" data-i18n="code.open.file">MdeModulePkg/Core/Dxe/Hand/Handle.c</div>
+                <div class="code-file-label">來源：MdeModulePkg/Core/Dxe/Hand/Handle.c</div>
                 <div class="code-block"><pre id="code-open-pre"></pre></div>
             </div>
 
             <div class="code-pane" id="pane-locate">
-                <div class="code-file-label" data-i18n="code.locate.file">MdeModulePkg/Core/Dxe/Hand/Locate.c</div>
+                <div class="code-file-label">來源：MdeModulePkg/Core/Dxe/Hand/Locate.c</div>
                 <div class="code-block"><pre id="code-locate-pre"></pre></div>
             </div>
 
             <div class="code-pane" id="pane-locbuf">
-                <div class="code-file-label" data-i18n="code.locbuf.file">MdeModulePkg/Core/Dxe/Hand/Locate.c</div>
+                <div class="code-file-label">來源：MdeModulePkg/Core/Dxe/Hand/Locate.c</div>
                 <div class="code-block"><pre id="code-locbuf-pre"></pre></div>
             </div>
         </section>
@@ -351,37 +346,37 @@ OpenProtocol(
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="references" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="references.title">參考資源</h2>
-                <p data-i18n="references.desc"></p>
+                <h2>參考資源</h2>
+                <p>以下規格文件與原始碼是本頁面的知識來源</p>
             </div>
 
             <ul class="refs-list">
                 <li>
-                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer" data-i18n="ref.uefi.title">UEFI Specification 2.10 — Section 7.3</a>
-                    <p data-i18n="ref.uefi.desc"></p>
+                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer">UEFI Specification 2.10 — Section 7.3: Protocol Handler Services</a>
+                    <p>定義 OpenProtocol、HandleProtocol、LocateProtocol、LocateHandleBuffer 的完整語義和參數。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Handle.c" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.handle">EDK2 Source: Handle.c</a>
-                    <p data-i18n="ref.edk2.handle.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Handle.c" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/Hand/Handle.c</a>
+                    <p>CoreOpenProtocol、CoreHandleProtocol、CoreOpenProtocolInformation 的實作。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Locate.c" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.locate">EDK2 Source: Locate.c</a>
-                    <p data-i18n="ref.edk2.locate.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Locate.c" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/Hand/Locate.c</a>
+                    <p>CoreLocateProtocol、CoreLocateHandle、CoreLocateHandleBuffer 的實作。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/DxeMain.h" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.main">EDK2 Source: DxeMain.h</a>
-                    <p data-i18n="ref.edk2.main.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/DxeMain.h" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/DxeMain.h</a>
+                    <p>OPEN_PROTOCOL_DATA、PROTOCOL_INTERFACE、PROTOCOL_ENTRY 結構定義。</p>
                 </li>
                 <li>
-                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer" data-i18n="ref.pi.title">UEFI PI Specification — Volume 2</a>
-                    <p data-i18n="ref.pi.desc"></p>
+                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer">UEFI Platform Initialization Specification — Volume 2</a>
+                    <p>DXE Core 服務、驅動程式模型、Handle Database 記憶體模型。</p>
                 </li>
             </ul>
         </section>
 
     </main>
 
-    <footer class="footer" data-i18n="footer.text">UEFI Protocol Services Visualizer | Educational Purpose</footer>
+    <footer class="footer">UEFI Protocol Services 視覺化 | 教育用途</footer>
 
     <script src="script.js"></script>
 </body>

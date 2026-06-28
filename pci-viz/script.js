@@ -1,3 +1,236 @@
+/* i18n (Chinese only) - baked in, EN version removed */
+const translations = { 'zh-TW': {
+    "page.title": "UEFI PCI 子系統視覺化",
+    "nav.back": "← 返回工具列表",
+    "nav.overview": "概述",
+    "nav.configspace": "配置空間",
+    "nav.access": "存取機制",
+    "nav.enumeration": "PCI 列舉",
+    "nav.rootbridge": "Root Bridge IO",
+    "nav.pciio": "PCI IO",
+    "nav.archcompare": "架構比較",
+    "nav.code": "程式碼解析",
+    "nav.references": "參考資源",
+    "overview.title": "UEFI PCI 子系統概述",
+    "overview.subtitle": "理解 UEFI EDK2 如何發現、列舉和管理 PCI/PCIe 設備",
+    "overview.what.title": "什麼是 PCI/PCIe？",
+    "overview.what.desc": "PCI（Peripheral Component Interconnect）和其後續版本 PCIe（PCI Express）是電腦中最重要的匯流排標準。幾乎所有現代外接設備（網路卡、顯示卡、NVMe SSD、USB 控制器）都透過 PCIe 連接到 CPU。每個 PCI 設備擁有一個標準化的配置空間（Configuration Space），供韌體和作業系統發現和配置設備。",
+    "overview.why.title": "為什麼 BIOS 工程師需要理解 PCI？",
+    "overview.why.desc": "UEFI 韌體負責在作業系統啟動之前完成所有 PCI 設備的發現和初始化。這包括：掃描所有匯流排發現設備、讀取和配置 BAR（Base Address Register）、分配記憶體和 I/O 資源、安裝 PCI IO Protocol 供驅動程式使用。任何 PCI 初始化錯誤都可能導致設備無法使用或系統無法開機。",
+    "overview.arch.title": "x86_64 vs ARM64",
+    "overview.arch.desc": "x86 平台支援兩種配置空間存取方式：傳統 I/O 埠（CF8h/CFCh）和記憶體映射（ECAM/MMCONFIG）。ARM64 平台僅使用 ECAM（Enhanced Configuration Access Mechanism）透過記憶體映射存取。EDK2 透過抽象層（PciSegmentLib、PciHostBridgeDxe）統一兩種架構的差異。",
+    "phase.pei": "PEI 階段",
+    "phase.dxe": "DXE 列舉",
+    "phase.assign": "資源分配",
+    "phase.driver": "驅動安裝",
+    "phase.bds": "BDS 啟動",
+    "config.title": "PCI 配置空間",
+    "config.subtitle": "完整的 256-byte PCI 標頭和 4K PCIe 延伸配置空間",
+    "config.type0.title": "Type 0 標頭（端點設備）",
+    "config.type0.desc": "所有 PCI/PCIe 端點設備（網路卡、顯示卡、NVMe 控制器等）使用 Type 0 標頭。包含 6 個 BAR（Base Address Register），用於映射設備的記憶體或 I/O 區間。Vendor ID 和 Device ID 是設備的唯一標識，驅動程式透過這兩個值來匹配對應的驅動程式。",
+    "config.type1.title": "Type 1 標頭（PCI 橋接器）",
+    "config.type1.desc": "PCI-to-PCI 橋接器使用 Type 1 標頭。橋接器負責連接不同的 PCI 匯流排段，包含 Primary、Secondary 和 Subordinate Bus Number 來定義匯流排階層。橋接器也定義了下游設備可使用的 I/O、Memory 和 Prefetchable Memory 範圍。",
+    "config.extended.title": "PCIe 延伸配置空間",
+    "config.extended.desc": "PCIe 將配置空間從 256 bytes 擴展到 4096 bytes（0x100-0xFFF）。延伸空間包含 PCIe 特有的 Capability 結構，如 AER（Advanced Error Reporting）、ACS（Access Control Services）、L1 PM Substates 等。延伸空間只能透過 ECAM（記憶體映射）存取，不支援傳統 CF8/CFC 方式。",
+    "config.toggle.type0": "Type 0（端點）",
+    "config.toggle.type1": "Type 1（橋接器）",
+    "config.toggle.extended": "PCIe 延伸",
+    "reg.vendorid": "Vendor ID — 由 PCI-SIG 分配的廠商識別碼（如 Intel=8086h, AMD=1022h）",
+    "reg.deviceid": "Device ID — 廠商自訂的設備型號識別碼",
+    "reg.command": "Command — 控制設備行為（Memory Space Enable, Bus Master Enable 等）",
+    "reg.status": "Status — 設備狀態旗標（Capabilities List, Interrupt Status 等）",
+    "reg.revisionid": "Revision ID — 設備硬體修訂版本",
+    "reg.classcode": "Class Code — 設備功能分類（3 bytes: Base Class, Sub-Class, Prog IF）",
+    "reg.cacheline": "Cache Line Size — 系統快取行大小（以 DWORD 為單位）",
+    "reg.latency": "Latency Timer — PCI 匯流排仲裁延遲計時器",
+    "reg.headertype": "Header Type — 標頭類型（Bit 7: 多功能設備, Bit 0-6: 0=端點, 1=橋接器）",
+    "reg.bist": "BIST — 內建自我測試（Built-In Self Test）",
+    "reg.bar": "BAR — Base Address Register: 定義設備的記憶體或 I/O 映射區間",
+    "reg.subsystem": "Subsystem Vendor/Device ID — 子系統（主機板/OEM）識別碼",
+    "reg.exprom": "Expansion ROM — Option ROM 基底位址",
+    "reg.capptr": "Capabilities Pointer — 指向第一個 Capability 結構的偏移量",
+    "reg.intline": "Interrupt Line — 中斷線路號（由韌體填入）",
+    "reg.intpin": "Interrupt Pin — 設備使用的中斷引腳（INTA# ~ INTD#）",
+    "reg.pribus": "Primary Bus — 橋接器上游匯流排號",
+    "reg.secbus": "Secondary Bus — 橋接器下游匯流排號",
+    "reg.subbus": "Subordinate Bus — 橋接器下游可達的最大匯流排號",
+    "reg.iobase": "I/O Base/Limit — 橋接器轉發的 I/O 地址範圍",
+    "reg.membase": "Memory Base/Limit — 橋接器轉發的不可預取記憶體範圍",
+    "reg.prefbase": "Prefetchable Base/Limit — 橋接器轉發的可預取記憶體範圍",
+    "reg.bridgectrl": "Bridge Control — 橋接器控制暫存器（ISA Mode, VGA Enable 等）",
+    "access.title": "配置空間存取機制",
+    "access.subtitle": "x86 與 ARM 平台如何讀寫 PCI 配置空間",
+    "access.x86.title": "x86_64 存取方式",
+    "access.legacy.title": "傳統 I/O 埠方式（CF8h/CFCh）",
+    "access.legacy.desc": "最早的 PCI 配置空間存取方式。向 0xCF8（CONFIG_ADDRESS）寫入匯流排/設備/功能/偏移量的組合值，然後從 0xCFC（CONFIG_DATA）讀寫資料。此方式僅支援 256 bytes 配置空間，且同一時間只能存取一個暫存器，需要鎖定保護。EDK2 對應 PciCf8Lib。",
+    "access.ecam.title": "ECAM / MMCONFIG 方式",
+    "access.ecam.desc": "PCIe 引入的記憶體映射存取機制。MCFG ACPI 表提供 ECAM 基底位址，完整的配置空間被映射到連續的記憶體區域。位址計算：ECAM_BASE + (Bus << 20) + (Dev << 15) + (Fun << 12) + Offset。支援完整 4K 延伸配置空間，且可使用普通記憶體讀寫指令。EDK2 對應 PciExpressLib。",
+    "access.arm.title": "ARM64 存取方式",
+    "access.arm.ecam.title": "純 ECAM（記憶體映射）",
+    "access.arm.ecam.desc": "ARM64 平台不支援 I/O 埠，完全依賴 ECAM 記憶體映射存取 PCI 配置空間。ECAM 基底位址同樣由 MCFG ACPI 表或設備樹提供。存取方式與 x86 ECAM 相同，使用同一位址計算公式。EDK2 透過 PciSegmentLib 提供統一的抽象介面。",
+    "access.formula.title": "位址計算公式",
+    "access.formula": "ECAM_BASE + (Bus << 20) + (Dev << 15) + (Fun << 12) + Offset",
+    "access.cf8.format": "CF8h 格式: [31]=Enable | [23:16]=Bus | [15:11]=Dev | [10:8]=Fun | [7:2]=Offset | [1:0]=00",
+    "enum.title": "PCI 列舉流程",
+    "enum.subtitle": "PciBusDxe 完整的設備發現與資源分配流程",
+    "enum.step1.title": "步驟 1：Host Bridge 資源分配協議",
+    "enum.step1.desc": "平台程式碼產生 EFI_PCI_HOST_BRIDGE_RESOURCE_ALLOCATION_PROTOCOL",
+    "enum.step1.detail": "平台的 PciHostBridgeDxe 驅動程式啟動，根據平台的硬體拓撲（通常由 ACPI 表或硬體暫存器描述），建立 Host Bridge 和 Root Bridge 資料結構。它安裝 EFI_PCI_HOST_BRIDGE_RESOURCE_ALLOCATION_PROTOCOL 到 Host Bridge Handle 上，供後續的 PCI Bus 驅動程式使用。",
+    "enum.step2.title": "步驟 2：建立 Root Bridge",
+    "enum.step2.desc": "PciHostBridgeDxe 建立 Root Bridge，安裝 EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL",
+    "enum.step2.detail": "對於每個 PCI Root Bridge（一個系統可能有多個），驅動程式分配 PCI_ROOT_BRIDGE_INSTANCE 結構，初始化匯流排範圍（如 Bus 0-255）和資源視窗（MMIO、I/O、Prefetchable Memory），然後在對應的 Handle 上安裝 EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL。",
+    "enum.step3.title": "步驟 3：PciBusDxe 啟動",
+    "enum.step3.desc": "PciBusDxe 透過 Supported()/Start() 綁定到 Root Bridge Handle",
+    "enum.step3.detail": "PciBusDxe 是 UEFI Bus Driver，它實作 EFI_DRIVER_BINDING_PROTOCOL。在 Supported() 中檢查 Handle 是否有 PCI Root Bridge IO Protocol。在 Start() 中開始列舉流程，透過 OpenProtocol() 取得 Root Bridge IO Protocol 的存取權。",
+    "enum.step4.title": "步驟 4：匯流排掃描",
+    "enum.step4.desc": "遍歷 Bus 0-255, Device 0-31, Function 0-7",
+    "enum.step4.detail": "PciBusDxe 使用三層迴圈掃描 PCI 拓撲。對每個 Bus:Dev:Fun 組合，讀取配置空間偏移 0x00 處的 Vendor ID。如果 Vendor ID 為 0xFFFF，表示該位置沒有設備。對於存在的設備，檢查 Header Type 的 Bit 7 來判斷是否為多功能設備。",
+    "enum.step5.title": "步驟 5：設備偵測",
+    "enum.step5.desc": "讀取 Vendor ID（0xFFFF = 無設備），檢查 Header Type Bit 7（多功能）",
+    "enum.step5.detail": "當 Vendor ID ≠ 0xFFFF 時，設備存在。讀取 Header Type 暫存器：Bit 0-6 指示標頭類型（0x00=Type 0 端點, 0x01=Type 1 橋接器），Bit 7 指示多功能設備。如果 Function 0 的 Bit 7 為 0，則跳過 Function 1-7 的掃描。",
+    "enum.step6.title": "步驟 6：建立設備結構",
+    "enum.step6.desc": "為每個發現的設備分配 PCI_IO_DEVICE 結構",
+    "enum.step6.detail": "PciBusDxe 為每個偵測到的設備建立 PCI_IO_DEVICE 內部資料結構，記錄 Bus/Dev/Fun、Vendor/Device ID、Class Code、Header Type 等資訊。如果發現 Type 1（橋接器），還會遞迴掃描橋接器下游的匯流排。",
+    "enum.step7.title": "步驟 7：BAR 大小探測",
+    "enum.step7.desc": "寫入 0xFFFFFFFF → 讀回 → 計算大小和類型（MMIO/IO/64-bit）",
+    "enum.step7.detail": "BAR sizing 是 PCI 列舉的關鍵步驟。對每個 BAR：① 儲存原始值 ② 寫入全 1（0xFFFFFFFF）③ 讀回值，低位的固定 bits 表示對齊需求（即大小）④ 恢復原始值。Bit 0 區分 Memory（0）或 I/O（1）BAR。Memory BAR 的 Bit 1-2 指示 32-bit 或 64-bit 定址。",
+    "enum.step8.title": "步驟 8：資源需求提交",
+    "enum.step8.desc": "收集所有資源需求 → 提交給 Host Bridge 進行分配",
+    "enum.step8.detail": "PciBusDxe 匯總所有設備的資源需求（MMIO 大小、I/O 範圍、Prefetchable Memory），透過 EFI_PCI_HOST_BRIDGE_RESOURCE_ALLOCATION_PROTOCOL 的 SubmitResources() 提交給 Host Bridge。Host Bridge 與平台邏輯協作，決定每個資源視窗的起始位址。",
+    "enum.step9.title": "步驟 9：位址分配",
+    "enum.step9.desc": "Host Bridge 分配位址視窗 → 寫入 BAR 位址",
+    "enum.step9.detail": "Host Bridge 完成資源分配後（透過 NotifyPhase(EfiPciHostBridgeSetResources)），PciBusDxe 從 GetProposedResources() 取得分配結果，將計算好的基底位址寫入每個設備的 BAR 暫存器和橋接器的 Base/Limit 暫存器。",
+    "enum.step10.title": "步驟 10：安裝 PCI IO Protocol",
+    "enum.step10.desc": "在每個設備 Handle 上安裝 EFI_PCI_IO_PROTOCOL",
+    "enum.step10.detail": "PciBusDxe 為每個列舉到的 PCI 設備建立一個新的 Handle，並安裝 EFI_PCI_IO_PROTOCOL 實例。這個 Protocol 提供了設備特定驅動程式所需的所有存取功能（配置空間讀寫、MMIO 存取、DMA 映射等）。",
+    "enum.step11.title": "步驟 11：啟用設備",
+    "enum.step11.desc": "設定 Command 暫存器：Memory Space Enable, Bus Master Enable",
+    "enum.step11.detail": "最後，PciBusDxe 或設備驅動程式透過寫入 PCI Command 暫存器（偏移 0x04）來啟用設備。設定 Bit 1（Memory Space Enable）允許 MMIO 存取，設定 Bit 2（Bus Master Enable）允許設備發起 DMA 傳輸。設備此時才真正可以正常運作。",
+    "rb.title": "PCI Root Bridge IO Protocol",
+    "rb.subtitle": "平台層級的 PCI 存取抽象",
+    "rb.producer": "生產者：PciHostBridgeDxe（平台特定）",
+    "rb.consumer": "消費者：PciBusDxe、Option ROM 載入器",
+    "rb.desc": "EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL 是平台提供的最底層 PCI 存取介面。它直接與硬體互動（CF8/CFC 或 ECAM），為上層的 PciBusDxe 提供統一的匯流排存取能力。每個 Root Bridge 都有獨立的 Protocol 實例。",
+    "rb.pci.title": "Pci.Read / Pci.Write",
+    "rb.pci.desc": "讀寫指定 Bus:Dev:Fun 的 PCI 配置空間暫存器",
+    "rb.mem.title": "Mem.Read / Mem.Write",
+    "rb.mem.desc": "讀寫 PCI 記憶體映射區間（MMIO BAR 對應的位址）",
+    "rb.io.title": "Io.Read / Io.Write",
+    "rb.io.desc": "讀寫 PCI I/O 映射區間（I/O BAR 對應的埠位址）",
+    "rb.map.title": "Map / Unmap",
+    "rb.map.desc": "DMA 緩衝區映射：將系統記憶體位址轉換為 PCI 設備可存取的匯流排位址",
+    "rb.alloc.title": "AllocateBuffer / FreeBuffer",
+    "rb.alloc.desc": "分配/釋放適合 DMA 使用的記憶體緩衝區（考慮對齊和定址限制）",
+    "rb.config.title": "Configuration",
+    "rb.config.desc": "回傳 Root Bridge 的資源配置資訊（MMIO 視窗、I/O 視窗、匯流排範圍）",
+    "pciio.title": "PCI IO Protocol",
+    "pciio.subtitle": "設備層級的 PCI 存取介面",
+    "pciio.producer": "生產者：PciBusDxe（自動為每個設備安裝）",
+    "pciio.consumer": "消費者：設備驅動程式（NVMe、USB、網路卡、GOP 等）",
+    "pciio.desc": "EFI_PCI_IO_PROTOCOL 是 PCI 設備驅動程式最常使用的介面。它封裝了設備的 Segment:Bus:Dev:Fun 資訊，驅動程式不需要知道設備的拓撲位置。PciBusDxe 在列舉完成後為每個 PCI 設備自動安裝此 Protocol。",
+    "pciio.pci.title": "Pci.Read / Pci.Write",
+    "pciio.pci.desc": "讀寫此設備的配置空間（自動填入 BDF）",
+    "pciio.mem.title": "Mem.Read / Mem.Write",
+    "pciio.mem.desc": "讀寫此設備的 MMIO BAR 區間（指定 BAR 索引 + 偏移量）",
+    "pciio.io.title": "Io.Read / Io.Write",
+    "pciio.io.desc": "讀寫此設備的 I/O BAR 區間",
+    "pciio.map.title": "Map / Unmap",
+    "pciio.map.desc": "DMA 映射：將主機記憶體位址轉為設備可存取的匯流排位址",
+    "pciio.alloc.title": "AllocateBuffer / FreeBuffer",
+    "pciio.alloc.desc": "配置 DMA 相容的記憶體",
+    "pciio.getloc.title": "GetLocation",
+    "pciio.getloc.desc": "回傳此設備的 Segment:Bus:Dev:Fun 位置資訊",
+    "pciio.attr.title": "Attributes / GetBarAttributes / SetBarAttributes",
+    "pciio.attr.desc": "查詢/設定設備屬性和 BAR 的資源描述",
+    "pciio.rom.title": "RomImage / RomSize",
+    "pciio.rom.desc": "存取設備的 Option ROM 映像",
+    "pciio.callchain": "呼叫鏈路",
+    "pciio.callchain.desc": "設備驅動程式呼叫 PCI IO Protocol → PciBusDxe 轉換為 Root Bridge IO 呼叫（填入 BDF）→ Root Bridge IO 執行實際硬體存取",
+    "arch.title": "x86_64 vs ARM64 架構比較",
+    "arch.subtitle": "PCI 子系統在不同架構的關鍵差異",
+    "arch.col.feature": "特性",
+    "arch.col.x86": "x86_64",
+    "arch.col.arm": "ARM64",
+    "arch.row.access": "配置空間存取",
+    "arch.row.access.x86": "CF8/CFC（傳統）+ ECAM（PCIe）",
+    "arch.row.access.arm": "僅 ECAM（記憶體映射）",
+    "arch.row.discovery": "Root Bridge 發現",
+    "arch.row.discovery.x86": "平台程式碼 + ACPI",
+    "arch.row.discovery.arm": "ACPI（MCFG/IORT）或設備樹",
+    "arch.row.ioport": "I/O 埠空間",
+    "arch.row.ioport.x86": "原生支援（IN/OUT 指令）",
+    "arch.row.ioport.arm": "不支援（部分平台透過 MMIO 模擬）",
+    "arch.row.resource": "資源分配",
+    "arch.row.resource.x86": "MMIO + I/O + Prefetchable Memory",
+    "arch.row.resource.arm": "僅 MMIO + Prefetchable Memory（無原生 I/O）",
+    "arch.row.lib": "EDK2 存取庫",
+    "arch.row.lib.x86": "PciCf8Lib / PciExpressLib / PciSegmentLib",
+    "arch.row.lib.arm": "PciSegmentLib（ECAM 實作）",
+    "arch.row.interrupt": "中斷",
+    "arch.row.interrupt.x86": "INTx（傳統）+ MSI/MSI-X",
+    "arch.row.interrupt.arm": "MSI/MSI-X（透過 GICv3 ITS）",
+    "arch.row.dma": "DMA / IOMMU",
+    "arch.row.dma.x86": "Intel VT-d / AMD-Vi",
+    "arch.row.dma.arm": "ARM SMMU（System MMU）",
+    "code.title": "程式碼解析",
+    "code.subtitle": "EDK2 PCI 子系統核心程式碼片段",
+    "code.scan.title": "PCI 匯流排掃描 (PciBusDxe)",
+    "code.scan.desc": "PciBusDxe/PciEnumerator.c 中的核心掃描邏輯：遍歷所有 Bus:Dev:Fun 組合，讀取 Vendor ID 來偵測設備存在性。",
+    "code.bar.title": "BAR 大小探測",
+    "code.bar.desc": "BAR sizing 邏輯：寫入全 1 然後讀回，根據低位固定 bits 計算對齊需求（即 BAR 大小）。",
+    "code.pciio.title": "PCI IO Protocol 使用範例",
+    "code.pciio.desc": "設備驅動程式如何透過 EFI_PCI_IO_PROTOCOL 讀取 Vendor/Device ID。",
+    "code.rootbridge.title": "Root Bridge IO 配置空間存取",
+    "code.rootbridge.desc": "Root Bridge IO Protocol 如何讀寫 PCI 配置空間（ECAM 路徑）。",
+    "ref.title": "參考資源",
+    "ref.subtitle": "延伸閱讀與官方規格",
+    "ref.pci.title": "PCI/PCIe 規格",
+    "ref.edk2.title": "EDK2 原始碼",
+    "ref.uefi.title": "UEFI/PI 規格",
+    "ref.other.title": "其他資源"
+} };
+let currentLang = 'zh-TW';
+
+function t(key, params = {}) {
+    let text = (translations['zh-TW'] && translations['zh-TW'][key]) || key;
+    Object.keys(params).forEach((param) => {
+        text = text.replace(`{${param}}`, params[param]);
+    });
+    return text;
+}
+
+function getCurrentLang() {
+    return 'zh-TW';
+}
+
+function updatePageTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const value = t(key);
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.placeholder = value;
+        } else {
+            el.innerHTML = value;
+        }
+    });
+    document.title = t('page.title');
+}
+
+function setLanguage() {
+    document.documentElement.lang = 'zh-TW';
+    updatePageTranslations();
+    if (typeof refreshDynamicContent === 'function') {
+        refreshDynamicContent();
+    }
+    if (typeof updateBuildCommand === 'function') {
+        updateBuildCommand();
+    }
+}
+
+function initI18n() {
+    setLanguage();
+}
+
 /* ------------------------------------------------------------------ */
 /*  PCI Subsystem Visualizer – Main Script                             */
 /*  Interactive SVG diagrams + step-by-step enumeration flow           */

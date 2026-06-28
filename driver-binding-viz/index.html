@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="i18n.js"></script>
 </head>
 <body>
     <div class="bg-orb orb-a"></div>
@@ -17,22 +16,18 @@
 
     <nav class="top-nav">
         <div class="brand">
-            <a href="../index.html" class="back-link" data-i18n="nav.back">← Back to Tools</a>
-            <span data-i18n="page.title">UEFI Driver Binding Visualizer</span>
+            <a href="../index.html" class="back-link">← 返回工具列表</a>
+            <span>UEFI Driver Binding 機制視覺化</span>
         </div>
         <ul class="nav-links">
-            <li><a class="nav-link active" href="#overview"    data-i18n="nav.overview">Overview</a></li>
-            <li><a class="nav-link"        href="#structs"     data-i18n="nav.structs">Data Structures</a></li>
-            <li><a class="nav-link"        href="#connect"     data-i18n="nav.connect">ConnectController</a></li>
-            <li><a class="nav-link"        href="#disconnect"  data-i18n="nav.disconnect">DisconnectController</a></li>
-            <li><a class="nav-link"        href="#scenario"    data-i18n="nav.scenario">Real Scenario</a></li>
-            <li><a class="nav-link"        href="#code"        data-i18n="nav.code">Code</a></li>
-            <li><a class="nav-link"        href="#references"  data-i18n="nav.references">References</a></li>
+            <li><a class="nav-link active" href="#overview"   >概述</a></li>
+            <li><a class="nav-link"        href="#structs"    >內部結構</a></li>
+            <li><a class="nav-link"        href="#connect"    >ConnectController</a></li>
+            <li><a class="nav-link"        href="#disconnect" >DisconnectController</a></li>
+            <li><a class="nav-link"        href="#scenario"   >實際案例</a></li>
+            <li><a class="nav-link"        href="#code"       >程式碼解析</a></li>
+            <li><a class="nav-link"        href="#references" >參考資源</a></li>
         </ul>
-        <div class="lang-switcher">
-            <button class="lang-btn" data-lang="zh-TW" title="繁體中文">中文</button>
-            <button class="lang-btn" data-lang="en"    title="English">EN</button>
-        </div>
     </nav>
 
     <main class="page">
@@ -41,44 +36,44 @@
         <!--  Section 1: Overview / Hero                                -->
         <!-- ══════════════════════════════════════════════════════════ -->
         <header id="overview" class="section hero">
-            <p class="eyebrow" data-i18n="nav.overview">Overview</p>
-            <h1 data-i18n="overview.title">UEFI Driver Binding Protocol 概述</h1>
-            <p class="hero-desc" data-i18n="overview.subtitle">理解 EDK2 驅動程式如何被動態綁定到設備</p>
+            <p class="eyebrow">概述</p>
+            <h1>UEFI Driver Binding Protocol 概述</h1>
+            <p class="hero-desc">理解 EDK2 驅動程式如何被動態綁定到設備</p>
 
             <div class="card-grid">
                 <div class="card">
                     <div class="card-icon">🔌</div>
-                    <h3 data-i18n="overview.what.title">什麼是 Driver Binding Protocol？</h3>
-                    <p data-i18n="overview.what.desc"></p>
+                    <h3>什麼是 Driver Binding Protocol？</h3>
+                    <p>EFI_DRIVER_BINDING_PROTOCOL 是 UEFI 驅動程式模型的核心。每個符合 UEFI 驅動程式模型的驅動程式都必須實作此協定，並將其安裝在自己的映像句柄（Image Handle）上。DXE Core 透過 ConnectController() 服務，以此協定為媒介，動態地將驅動程式與設備句柄（Device Handle）綁定。</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">⚙️</div>
-                    <h3 data-i18n="overview.why.title">為什麼需要此機制？</h3>
-                    <p data-i18n="overview.why.desc"></p>
+                    <h3>為什麼需要此機制？</h3>
+                    <p>UEFI 採用資料驅動的設備探測模型：驅動程式不在載入時就與硬體綁定，而是由系統在需要時透過標準 API 進行匹配。這使得驅動程式的新增或替換不需修改核心，提供高度的可擴充性與可替換性。</p>
                 </div>
             </div>
 
             <div style="margin-top: 32px;">
-                <h2 style="font-family: var(--head); font-size:1.1rem; font-weight:600; color:var(--text); text-align:center; margin-bottom:20px;" data-i18n="overview.three.title">三個核心函式</h2>
+                <h2 style="font-family: var(--head); font-size:1.1rem; font-weight:600; color:var(--text); text-align:center; margin-bottom:20px;">三個核心函式</h2>
                 <div class="fn-grid">
                     <div class="fn-card supported">
-                        <h3 data-i18n="overview.supported.title">Supported()</h3>
-                        <p data-i18n="overview.supported.desc"></p>
+                        <h3>Supported()</h3>
+                        <p>測試此驅動程式是否支援指定的 Controller Handle。通常嘗試開啟特定協定（例如 PCI I/O Protocol）並驗證 Vendor ID/Device ID。必須是冪等操作，不得改變系統狀態。</p>
                     </div>
                     <div class="fn-card start">
-                        <h3 data-i18n="overview.start.title">Start()</h3>
-                        <p data-i18n="overview.start.desc"></p>
+                        <h3>Start()</h3>
+                        <p>在指定的 Controller Handle 上啟動此驅動程式。在此函式中：①開啟所需協定（BY_DRIVER）②配置硬體資源③在控制器或子句柄上安裝此驅動程式提供的協定。</p>
                     </div>
                     <div class="fn-card stop">
-                        <h3 data-i18n="overview.stop.title">Stop()</h3>
-                        <p data-i18n="overview.stop.desc"></p>
+                        <h3>Stop()</h3>
+                        <p>從指定的 Controller Handle 停止此驅動程式。必須撤銷 Start() 所做的一切：①解除安裝協定②關閉開啟的協定③銷毀子句柄④釋放所有資源。</p>
                     </div>
                 </div>
             </div>
 
             <div class="connect-box" style="margin-top:28px; max-width:800px; margin-left:auto; margin-right:auto;">
-                <h3 data-i18n="overview.connect.title">ConnectController() 的角色</h3>
-                <p data-i18n="overview.connect.desc"></p>
+                <h3>ConnectController() 的角色</h3>
+                <p>DXE Core 提供的 BS->ConnectController() 是驅動程式綁定的入口。它遍歷所有已安裝的 EFI_DRIVER_BINDING_PROTOCOL，對每個協定依優先順序（Version 欄位）呼叫 Supported()，找到匹配的驅動程式後呼叫 Start()。</p>
             </div>
         </header>
 
@@ -87,8 +82,8 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="structs" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="structs.title">內部核心資料結構</h2>
-                <p data-i18n="structs.subtitle"></p>
+                <h2>內部核心資料結構</h2>
+                <p>EDK2 DXE Core 如何在記憶體中表示句柄與協定</p>
             </div>
 
             <div class="struct-grid">
@@ -98,23 +93,23 @@
                         <span class="struct-name">IHANDLE</span>
                         <span class="struct-sig">'hand'</span>
                     </div>
-                    <div class="struct-desc" data-i18n="structs.ihandle.desc"></div>
+                    <div class="struct-desc">每個 EFI_HANDLE 實際上是一個指向 IHANDLE 結構的指標。IHANDLE 是 EDK2 Core 私有的結構（定義於 DxeMain.h），外部程式碼只能看到 VOID* 類型的 EFI_HANDLE。</div>
                     <div class="struct-fields">
                         <div class="struct-field">
                             <span class="field-name">Signature</span>
-                            <span class="field-desc" data-i18n="structs.ihandle.sig"></span>
+                            <span class="field-desc">Signature：魔法數字 'hand'，用於驗證指標有效性</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">AllHandles</span>
-                            <span class="field-desc" data-i18n="structs.ihandle.all"></span>
+                            <span class="field-desc">AllHandles：連接到全域句柄資料庫 gHandleList 的 LIST_ENTRY</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Protocols</span>
-                            <span class="field-desc" data-i18n="structs.ihandle.protos"></span>
+                            <span class="field-desc">Protocols：此句柄上所有已安裝協定的 LIST_ENTRY 鏈結串列頭部</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Key</span>
-                            <span class="field-desc" data-i18n="structs.ihandle.key"></span>
+                            <span class="field-desc">Key：單調遞增的唯一識別鍵，供 LocateHandleBuffer 使用</span>
                         </div>
                     </div>
                 </div>
@@ -125,31 +120,31 @@
                         <span class="struct-name">PROTOCOL_INTERFACE</span>
                         <span class="struct-sig">'pi'</span>
                     </div>
-                    <div class="struct-desc" data-i18n="structs.proto_iface.desc"></div>
+                    <div class="struct-desc">每次呼叫 InstallProtocolInterface() 都會建立一個 PROTOCOL_INTERFACE 結構，記錄「在哪個句柄上安裝了哪個協定、介面指標是什麼」。</div>
                     <div class="struct-fields">
                         <div class="struct-field">
                             <span class="field-name">Signature</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.sig"></span>
+                            <span class="field-desc">Signature：'pi'，有效性驗證</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Link</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.link"></span>
+                            <span class="field-desc">Link：連接到所屬 IHANDLE.Protocols 串列的 LIST_ENTRY</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Handle</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.handle"></span>
+                            <span class="field-desc">Handle：回指所屬的 IHANDLE</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Protocol</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.pe"></span>
+                            <span class="field-desc">Protocol：指向對應 PROTOCOL_ENTRY 的指標（含 GUID）</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Interface</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.iface"></span>
+                            <span class="field-desc">Interface：指向實際協定結構的 void* 指標</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">OpenList</span>
-                            <span class="field-desc" data-i18n="structs.proto_iface.open"></span>
+                            <span class="field-desc">OpenList：透過 OpenProtocol() 開啟此協定的所有記錄串列</span>
                         </div>
                     </div>
                 </div>
@@ -160,27 +155,27 @@
                         <span class="struct-name">PROTOCOL_ENTRY</span>
                         <span class="struct-sig">'pe'</span>
                     </div>
-                    <div class="struct-desc" data-i18n="structs.proto_entry.desc"></div>
+                    <div class="struct-desc">PROTOCOL_ENTRY 是全域協定資料庫（gProtocolDatabase）中的一個項目，代表某個 GUID 對應的協定類型。同一 GUID 在整個系統中只有一個 PROTOCOL_ENTRY。</div>
                     <div class="struct-fields">
                         <div class="struct-field">
                             <span class="field-name">Signature</span>
-                            <span class="field-desc" data-i18n="structs.proto_entry.sig"></span>
+                            <span class="field-desc">Signature：'pe'</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">AllEntries</span>
-                            <span class="field-desc" data-i18n="structs.proto_entry.all"></span>
+                            <span class="field-desc">AllEntries：連接到 gProtocolDatabase 串列</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">ProtocolID</span>
-                            <span class="field-desc" data-i18n="structs.proto_entry.guid"></span>
+                            <span class="field-desc">ProtocolID：此協定的 EFI_GUID</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Protocols</span>
-                            <span class="field-desc" data-i18n="structs.proto_entry.protos"></span>
+                            <span class="field-desc">Protocols：所有安裝了此協定的 PROTOCOL_INTERFACE 串列</span>
                         </div>
                         <div class="struct-field">
                             <span class="field-name">Notify</span>
-                            <span class="field-desc" data-i18n="structs.proto_entry.notify"></span>
+                            <span class="field-desc">Notify：此協定的 RegisterProtocolNotify 回呼串列</span>
                         </div>
                     </div>
                 </div>
@@ -188,8 +183,8 @@
 
             <!-- Relationship diagram -->
             <div class="diagram-wrap" style="margin-top:40px;">
-                <div class="diagram-title" data-i18n="structs.diagram.title">三層結構關係圖</div>
-                <div class="diagram-desc" data-i18n="structs.diagram.desc"></div>
+                <div class="diagram-title">三層結構關係圖</div>
+                <div class="diagram-desc">gHandleList 串聯所有 IHANDLE；每個 IHANDLE.Protocols 串聯其上所有 PROTOCOL_INTERFACE；每個 PROTOCOL_INTERFACE.Protocol 回指全域 PROTOCOL_ENTRY。</div>
                 <div id="structs-diagram-container"></div>
             </div>
         </section>
@@ -199,15 +194,15 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="connect" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="connect.title">ConnectController 逐步流程</h2>
-                <p data-i18n="connect.subtitle"></p>
+                <h2>ConnectController 逐步流程</h2>
+                <p>觀察 DXE Core 如何將驅動程式動態綁定到設備句柄，以及 IHANDLE 在每個步驟的變化</p>
             </div>
 
             <div class="step-controls">
-                <button id="conn-prev" class="step-btn" disabled data-i18n="btn.prev">← 上一步</button>
+                <button id="conn-prev" class="step-btn" disabled>← 上一步</button>
                 <span id="conn-indicator" class="step-indicator">1 / 7</span>
-                <button id="conn-next" class="step-btn" data-i18n="btn.next">下一步 →</button>
-                <button id="conn-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                <button id="conn-next" class="step-btn">下一步 →</button>
+                <button id="conn-reset" class="step-btn reset-btn">重置</button>
             </div>
 
             <div id="conn-description" class="step-description">
@@ -226,15 +221,15 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="disconnect" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="disconnect.title">DisconnectController / Stop() 逐步流程</h2>
-                <p data-i18n="disconnect.subtitle"></p>
+                <h2>DisconnectController / Stop() 逐步流程</h2>
+                <p>觀察 DXE Core 如何拆除驅動程式綁定並清理 IHANDLE</p>
             </div>
 
             <div class="step-controls">
-                <button id="dis-prev" class="step-btn" disabled data-i18n="btn.prev">← 上一步</button>
+                <button id="dis-prev" class="step-btn" disabled>← 上一步</button>
                 <span id="dis-indicator" class="step-indicator">1 / 6</span>
-                <button id="dis-next" class="step-btn" data-i18n="btn.next">下一步 →</button>
-                <button id="dis-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                <button id="dis-next" class="step-btn">下一步 →</button>
+                <button id="dis-reset" class="step-btn reset-btn">重置</button>
             </div>
 
             <div id="dis-description" class="step-description disconnect-step">
@@ -253,20 +248,20 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="scenario" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="scenario.title">實際案例：PCI 設備完整綁定鏈</h2>
-                <p data-i18n="scenario.subtitle"></p>
+                <h2>實際案例：PCI 設備完整綁定鏈</h2>
+                <p>從 PCI 列舉到 Disk I/O Protocol 的完整 Driver Binding 過程</p>
             </div>
 
-            <p class="scenario-desc" data-i18n="scenario.desc"></p>
+            <p class="scenario-desc">以下展示一個 NVMe SSD 連接在 PCIe 匯流排上時，完整的 Driver Binding 鏈：PCI Host Bridge Driver → PCI Bus Driver → NVMe Controller Driver。每一層的父驅動程式建立子句柄後，下一層驅動程式再綁定到子句柄。</p>
 
             <div class="scenario-chain">
 
                 <div class="scenario-layer">
                     <div class="scenario-dot"></div>
                     <div class="scenario-content">
-                        <div class="scenario-layer-label" data-i18n="scenario.layer0">Layer 0</div>
+                        <div class="scenario-layer-label">PCI Host Bridge（Root Handle）</div>
                         <h4>PCI Host Bridge Driver</h4>
-                        <p data-i18n="scenario.l0.desc"></p>
+                        <p>PCI Host Bridge Driver 在 Root Bridge Handle 上安裝 EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL。此句柄代表整個 PCI 匯流排空間。</p>
                         <div class="scenario-protocols">
                             <span class="proto-badge">EFI_DEVICE_PATH_PROTOCOL</span>
                             <span class="proto-badge new">EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL</span>
@@ -277,9 +272,9 @@
                 <div class="scenario-layer">
                     <div class="scenario-dot"></div>
                     <div class="scenario-content">
-                        <div class="scenario-layer-label" data-i18n="scenario.layer1">Layer 1</div>
+                        <div class="scenario-layer-label">PCI Bus Driver 建立 PCI Device Handles</div>
                         <h4>PCI Bus Driver</h4>
-                        <p data-i18n="scenario.l1.desc"></p>
+                        <p>PCI Bus Driver 的 Start() 列舉所有 PCI 設備，對每個設備建立子 EFI_HANDLE，安裝 EFI_PCI_IO_PROTOCOL 和 EFI_DEVICE_PATH_PROTOCOL。</p>
                         <div class="scenario-protocols">
                             <span class="proto-badge">EFI_DEVICE_PATH_PROTOCOL</span>
                             <span class="proto-badge new">EFI_PCI_IO_PROTOCOL</span>
@@ -291,9 +286,9 @@
                 <div class="scenario-layer">
                     <div class="scenario-dot"></div>
                     <div class="scenario-content">
-                        <div class="scenario-layer-label" data-i18n="scenario.layer2">Layer 2</div>
+                        <div class="scenario-layer-label">NVMe Driver 綁定到 NVMe PCI Device</div>
                         <h4>NVMe Controller Driver</h4>
-                        <p data-i18n="scenario.l2.desc"></p>
+                        <p>NVMe Controller Driver 的 Supported() 確認 PCI Class Code 為 0x010802（NVMe），Start() 初始化控制器並安裝 EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL 和 EFI_BLOCK_IO_PROTOCOL。</p>
                         <div class="scenario-protocols">
                             <span class="proto-badge">EFI_PCI_IO_PROTOCOL</span>
                             <span class="proto-badge new">EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL</span>
@@ -305,9 +300,9 @@
                 <div class="scenario-layer">
                     <div class="scenario-dot"></div>
                     <div class="scenario-content">
-                        <div class="scenario-layer-label" data-i18n="scenario.layer3">Layer 3</div>
+                        <div class="scenario-layer-label">Partition Driver 建立磁碟分割子句柄</div>
                         <h4>Partition Driver</h4>
-                        <p data-i18n="scenario.l3.desc"></p>
+                        <p>Partition Driver 透過 EFI_BLOCK_IO_PROTOCOL 讀取 GPT 表，對每個分割區建立子句柄，安裝 EFI_BLOCK_IO_PROTOCOL（分割區範圍）和 EFI_DEVICE_PATH_PROTOCOL（含 GPT 分割區節點）。</p>
                         <div class="scenario-protocols">
                             <span class="proto-badge">EFI_BLOCK_IO_PROTOCOL (parent)</span>
                             <span class="proto-badge new">EFI_BLOCK_IO_PROTOCOL (partition)</span>
@@ -330,31 +325,31 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="code" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="code.title">關鍵程式碼解析</h2>
-                <p data-i18n="code.subtitle"></p>
+                <h2>關鍵程式碼解析</h2>
+                <p>EDK2 DXE Core 中實作 Driver Binding 的核心程式碼</p>
             </div>
 
             <div class="code-tabs">
-                <button class="code-tab active" data-tab="connect"  data-i18n="code.connect.title">CoreConnectController()</button>
-                <button class="code-tab"        data-tab="install"  data-i18n="code.install.title">CoreInstallProtocolInterface()</button>
-                <button class="code-tab"        data-tab="binding"  data-i18n="code.binding.title">Driver Binding Example</button>
+                <button class="code-tab active" data-tab="connect" >CoreConnectController() 核心邏輯</button>
+                <button class="code-tab"        data-tab="install" >CoreInstallProtocolInterface() 核心邏輯</button>
+                <button class="code-tab"        data-tab="binding" >典型 Driver Binding Protocol 實作</button>
             </div>
 
             <!-- ConnectController pane -->
             <div class="code-pane active" id="pane-connect">
-                <div class="code-file-label" data-i18n="code.connect.file">MdeModulePkg/Core/Dxe/Hand/DriverSupport.c</div>
+                <div class="code-file-label">來源：MdeModulePkg/Core/Dxe/Hand/DriverSupport.c</div>
                 <div class="code-block"><pre id="code-connect-pre"></pre></div>
             </div>
 
             <!-- InstallProtocol pane -->
             <div class="code-pane" id="pane-install">
-                <div class="code-file-label" data-i18n="code.install.file">MdeModulePkg/Core/Dxe/Hand/Handle.c</div>
+                <div class="code-file-label">來源：MdeModulePkg/Core/Dxe/Hand/Handle.c</div>
                 <div class="code-block"><pre id="code-install-pre"></pre></div>
             </div>
 
             <!-- Driver Binding pane -->
             <div class="code-pane" id="pane-binding">
-                <div class="code-file-label" data-i18n="code.binding.file">Example Driver</div>
+                <div class="code-file-label">範例：一個簡化的 USB Host Controller Driver</div>
                 <div class="code-block"><pre id="code-binding-pre"></pre></div>
             </div>
         </section>
@@ -364,30 +359,30 @@
         <!-- ══════════════════════════════════════════════════════════ -->
         <section id="references" class="section panel">
             <div class="section-head">
-                <h2 data-i18n="references.title">參考資源</h2>
-                <p data-i18n="references.desc"></p>
+                <h2>參考資源</h2>
+                <p>以下規格文件與原始碼是本頁面的知識來源</p>
             </div>
 
             <ul class="refs-list">
                 <li>
-                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer" data-i18n="ref.uefi.title">UEFI Specification 2.10 — Section 11</a>
-                    <p data-i18n="ref.uefi.desc"></p>
+                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer">UEFI Specification 2.10 — Section 11: Protocols — Driver Binding Protocol</a>
+                    <p>定義 EFI_DRIVER_BINDING_PROTOCOL 結構、Supported/Start/Stop 語義、ConnectController/DisconnectController 演算法。</p>
                 </li>
                 <li>
-                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer" data-i18n="ref.pi.title">UEFI PI Specification — Volume 2</a>
-                    <p data-i18n="ref.pi.desc"></p>
+                    <a href="https://uefi.org/specifications" target="_blank" rel="noopener noreferrer">UEFI Platform Initialization Specification — Volume 2: Driver Execution Environment</a>
+                    <p>定義 DXE Core 服務、驅動程式模型、IHANDLE/PROTOCOL_INTERFACE 記憶體模型。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Handle.c" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.hand">EDK2: Hand/Handle.c</a>
-                    <p data-i18n="ref.edk2.hand.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/Handle.c" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/Hand/Handle.c</a>
+                    <p>CoreInstallProtocolInterface、CoreUninstallProtocolInterface、CoreLocateHandle 的實作。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/DriverSupport.c" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.drv">EDK2: Hand/DriverSupport.c</a>
-                    <p data-i18n="ref.edk2.drv.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/Hand/DriverSupport.c" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/Hand/DriverSupport.c</a>
+                    <p>CoreConnectController、CoreDisconnectController、CoreConnectSingleController 的實作。</p>
                 </li>
                 <li>
-                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/DxeMain.h" target="_blank" rel="noopener noreferrer" data-i18n="ref.edk2.main">EDK2: DxeMain.h</a>
-                    <p data-i18n="ref.edk2.main.desc"></p>
+                    <a href="https://github.com/tianocore/edk2/blob/master/MdeModulePkg/Core/Dxe/DxeMain.h" target="_blank" rel="noopener noreferrer">EDK2 Source: MdeModulePkg/Core/Dxe/DxeMain.h</a>
+                    <p>IHANDLE、PROTOCOL_INTERFACE、PROTOCOL_ENTRY、OPEN_PROTOCOL_DATA 結構定義。</p>
                 </li>
             </ul>
         </section>
@@ -395,7 +390,7 @@
     </main>
 
     <footer class="footer">
-        <p data-i18n="footer.text">UEFI Driver Binding 機制視覺化 | 教育用途</p>
+        <p>UEFI Driver Binding 機制視覺化 | 教育用途</p>
     </footer>
 
     <script src="script.js" defer></script>

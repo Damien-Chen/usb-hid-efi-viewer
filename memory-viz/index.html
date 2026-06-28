@@ -6,7 +6,6 @@
     <title>UEFI EDK2 記憶體管理視覺化</title>
     <meta name="description" content="Interactive visualization of UEFI EDK2 memory management: data structures, memory layout, AllocatePages, FreePages, pool allocation, and boot timeline.">
     <link rel="stylesheet" href="styles.css">
-    <script src="i18n.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -15,32 +14,28 @@
             <span>UEFI EDK2 Memory Management</span>
         </div>
         <ul class="nav-links">
-            <li><a href="#data-structures" class="nav-link active" data-i18n="nav.dataStructures">資料結構</a></li>
-            <li><a href="#memory-layout" class="nav-link" data-i18n="nav.memoryLayout">記憶體配置圖</a></li>
-            <li><a href="#allocation" class="nav-link" data-i18n="nav.allocation">記憶體配置</a></li>
-            <li><a href="#deallocation" class="nav-link" data-i18n="nav.deallocation">記憶體釋放</a></li>
-            <li><a href="#pool-allocation" class="nav-link" data-i18n="nav.poolAllocation">Pool 配置</a></li>
-            <li><a href="#boot-timeline" class="nav-link" data-i18n="nav.bootTimeline">啟動時間線</a></li>
-            <li><a href="#s4-resume" class="nav-link" data-i18n="nav.s4resume">S4 Resume</a></li>
-            <li><a href="#policy-comparator" class="nav-link" data-i18n="nav.policyComparator">策略比較</a></li>
-            <li><a href="#fragmentation-heatmap" class="nav-link" data-i18n="nav.fragmentation">碎片化</a></li>
-            <li><a href="#runtime-handoff" class="nav-link" data-i18n="nav.runtimeHandoff">Runtime 交接</a></li>
+            <li><a href="#data-structures" class="nav-link active">資料結構</a></li>
+            <li><a href="#memory-layout" class="nav-link">記憶體配置圖</a></li>
+            <li><a href="#allocation" class="nav-link">記憶體配置</a></li>
+            <li><a href="#deallocation" class="nav-link">記憶體釋放</a></li>
+            <li><a href="#pool-allocation" class="nav-link">Pool 配置</a></li>
+            <li><a href="#boot-timeline" class="nav-link">啟動時間線</a></li>
+            <li><a href="#s4-resume" class="nav-link">S4 復甦</a></li>
+            <li><a href="#policy-comparator" class="nav-link">策略比較</a></li>
+            <li><a href="#fragmentation-heatmap" class="nav-link">碎片化</a></li>
+            <li><a href="#runtime-handoff" class="nav-link">Runtime 交接</a></li>
         </ul>
-        <div class="lang-switcher">
-            <button class="lang-btn" data-lang="zh-TW" title="繁體中文">中文</button>
-            <button class="lang-btn" data-lang="en" title="English">EN</button>
-        </div>
     </nav>
 
     <main class="container">
         <!-- Section 1: Data Structures -->
         <section id="data-structures" class="section">
-            <h1 data-i18n="section1.title">1. 基礎資料結構</h1>
+            <h1>1. 基礎資料結構</h1>
             
             <!-- LIST_ENTRY -->
             <div class="subsection">
-                <h2 data-i18n="section1.1.title">1.1 LIST_ENTRY 雙向鏈結串列</h2>
-                <p class="description" data-i18n="section1.1.desc">
+                <h2>1.1 LIST_ENTRY 雙向鏈結串列</h2>
+                <p class="description">
                     <code>LIST_ENTRY</code> 是 EDK2 中最基礎的資料結構，用於實現雙向鏈結串列。
                     它被嵌入到其他結構體中，用於將多個結構體串連起來。
                 </p>
@@ -54,7 +49,7 @@ typedef struct _LIST_ENTRY {
                 </div>
 
                 <div class="diagram-container">
-                    <h3 data-i18n="section1.1.diagram">LIST_ENTRY 結構圖解</h3>
+                    <h3>LIST_ENTRY 結構圖解</h3>
                     <div id="list-entry-diagram" class="diagram">
                         <svg viewBox="0 0 800 200" class="list-entry-svg">
                             <!-- Node 1 -->
@@ -118,8 +113,8 @@ typedef struct _LIST_ENTRY {
 
             <!-- MEMORY_MAP_ENTRY -->
             <div class="subsection">
-                <h2 data-i18n="section1.2.title">1.2 MEMORY_MAP_ENTRY 記憶體描述結構</h2>
-                <p class="description" data-i18n="section1.2.desc">
+                <h2>1.2 MEMORY_MAP_ENTRY 記憶體描述結構</h2>
+                <p class="description">
                     <code>MEMORY_MAP_ENTRY</code> 描述一塊連續的記憶體區域，包含其類型、起始位址、頁數等資訊。
                     多個 MEMORY_MAP_ENTRY 透過 LIST_ENTRY 串連成記憶體映射表。
                 </p>
@@ -137,7 +132,7 @@ typedef struct {
                 </div>
 
                 <div class="diagram-container">
-                    <h3 data-i18n="section1.2.diagram">MEMORY_MAP_ENTRY 結構與串連</h3>
+                    <h3>MEMORY_MAP_ENTRY 結構與串連</h3>
                     <div id="memory-map-diagram" class="diagram">
                         <svg viewBox="0 0 900 350" class="memory-map-svg">
                             <!-- Memory Map Entry 1 -->
@@ -243,55 +238,55 @@ typedef struct {
 
             <!-- Memory Types -->
             <div class="subsection">
-                <h2 data-i18n="section1.3.title">1.3 EFI_MEMORY_TYPE 記憶體類型</h2>
+                <h2>1.3 EFI_MEMORY_TYPE 記憶體類型</h2>
                 <div class="memory-types-grid">
                     <div class="type-card reserved">
                         <h4>EfiReservedMemoryType</h4>
-                        <p data-i18n="memType.reserved">保留記憶體，不可使用</p>
+                        <p>保留記憶體，不可使用</p>
                     </div>
                     <div class="type-card loader-code">
                         <h4>EfiLoaderCode</h4>
-                        <p data-i18n="memType.loaderCode">OS Loader 程式碼</p>
+                        <p>OS Loader 程式碼</p>
                     </div>
                     <div class="type-card loader-data">
                         <h4>EfiLoaderData</h4>
-                        <p data-i18n="memType.loaderData">OS Loader 資料</p>
+                        <p>OS Loader 資料</p>
                     </div>
                     <div class="type-card bs-code">
                         <h4>EfiBootServicesCode</h4>
-                        <p data-i18n="memType.bsCode">Boot Services 程式碼</p>
+                        <p>Boot Services 程式碼</p>
                     </div>
                     <div class="type-card bs-data">
                         <h4>EfiBootServicesData</h4>
-                        <p data-i18n="memType.bsData">Boot Services 資料</p>
+                        <p>Boot Services 資料</p>
                     </div>
                     <div class="type-card rt-code">
                         <h4>EfiRuntimeServicesCode</h4>
-                        <p data-i18n="memType.rtCode">Runtime Services 程式碼</p>
+                        <p>Runtime Services 程式碼</p>
                     </div>
                     <div class="type-card rt-data">
                         <h4>EfiRuntimeServicesData</h4>
-                        <p data-i18n="memType.rtData">Runtime Services 資料</p>
+                        <p>Runtime Services 資料</p>
                     </div>
                     <div class="type-card conventional">
                         <h4>EfiConventionalMemory</h4>
-                        <p data-i18n="memType.conventional">可用的空閒記憶體</p>
+                        <p>可用的空閒記憶體</p>
                     </div>
                     <div class="type-card acpi-reclaim">
                         <h4>EfiACPIReclaimMemory</h4>
-                        <p data-i18n="memType.acpiReclaim">ACPI 可回收記憶體</p>
+                        <p>ACPI 可回收記憶體</p>
                     </div>
                     <div class="type-card acpi-nvs">
                         <h4>EfiACPIMemoryNVS</h4>
-                        <p data-i18n="memType.acpiNvs">ACPI NVS 記憶體</p>
+                        <p>ACPI NVS 記憶體</p>
                     </div>
                     <div class="type-card mmio">
                         <h4>EfiMemoryMappedIO</h4>
-                        <p data-i18n="memType.mmio">記憶體映射 I/O</p>
+                        <p>記憶體映射 I/O</p>
                     </div>
                     <div class="type-card persistent">
                         <h4>EfiPersistentMemory</h4>
-                        <p data-i18n="memType.persistent">持久性記憶體</p>
+                        <p>持久性記憶體</p>
                     </div>
                 </div>
             </div>
@@ -299,13 +294,11 @@ typedef struct {
 
         <!-- Section 2: Memory Layout -->
         <section id="memory-layout" class="section">
-            <h1 data-i18n="section2.title">2. 記憶體初始化配置圖</h1>
+            <h1>2. 記憶體初始化配置圖</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section2.1.title">2.1 系統記憶體整體佈局</h2>
-                <p class="description" data-i18n="section2.1.desc">
-                    在 UEFI 系統啟動過程中，記憶體會被劃分為不同的區域。以下是一個典型的記憶體佈局範例：
-                </p>
+                <h2>2.1 系統記憶體整體佈局</h2>
+                <p class="description">在 UEFI 系統啟動過程中，記憶體會被劃分為不同的區域。以下是一個典型的記憶體佈局範例：</p>
                 
                 <div class="diagram-container">
                     <div id="memory-layout-diagram" class="memory-layout">
@@ -390,10 +383,8 @@ typedef struct {
             </div>
 
             <div class="subsection">
-                <h2 data-i18n="section2.2.title">2.2 記憶體映射表初始狀態</h2>
-                <p class="description" data-i18n="section2.2.desc">
-                    系統啟動後，記憶體管理器會建立一個 Memory Map 鏈結串列來追蹤所有記憶體區域的狀態：
-                </p>
+                <h2>2.2 記憶體映射表初始狀態</h2>
+                <p class="description">系統啟動後，記憶體管理器會建立一個 Memory Map 鏈結串列來追蹤所有記憶體區域的狀態：</p>
                 
                 <div class="diagram-container">
                     <div id="initial-map-diagram" class="initial-map">
@@ -494,19 +485,19 @@ typedef struct {
 
         <!-- Section 3: Memory Allocation -->
         <section id="allocation" class="section">
-            <h1 data-i18n="section3.title">3. 記憶體配置流程</h1>
+            <h1>3. 記憶體配置流程</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section3.1.title">3.1 AllocatePages 配置流程</h2>
-                <p class="description" data-i18n="section3.1.desc">
+                <h2>3.1 AllocatePages 配置流程</h2>
+                <p class="description">
                     當呼叫 <code>gBS->AllocatePages()</code> 時，記憶體管理器會執行以下步驟來找到適合的記憶體區塊：
                 </p>
 
                 <div class="step-controls">
-                    <button id="alloc-prev" class="step-btn" disabled data-i18n="btn.prev">← 上一步</button>
+                    <button id="alloc-prev" class="step-btn" disabled>← 上一步</button>
                     <span id="alloc-step-indicator" class="step-indicator">步驟 1 / 7</span>
-                    <button id="alloc-next" class="step-btn" data-i18n="btn.next">下一步 →</button>
-                    <button id="alloc-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                    <button id="alloc-next" class="step-btn">下一步 →</button>
+                    <button id="alloc-reset" class="step-btn reset-btn">重置</button>
                 </div>
 
                 <div id="allocation-viz" class="allocation-container">
@@ -542,20 +533,20 @@ Status = gBS->AllocatePages (
             </div>
 
             <div class="subsection">
-                <h2 data-i18n="section3.2.title">3.2 配置演算法詳解</h2>
+                <h2>3.2 配置演算法詳解</h2>
                 <div class="algorithm-box">
-                    <h4 data-i18n="section3.2.algo">First-Fit 演算法</h4>
+                    <h4>First-Fit 演算法</h4>
                     <ol>
-                        <li data-i18n="section3.2.step1">從 gMemoryMap 鏈結串列的頭部開始遍歷</li>
-                        <li><span data-i18n="section3.2.step2">對每個 MEMORY_MAP_ENTRY 檢查：</span>
+                        <li>從 gMemoryMap 鏈結串列的頭部開始遍歷</li>
+                        <li><span>對每個 MEMORY_MAP_ENTRY 檢查：</span>
                             <ul>
-                                <li data-i18n="section3.2.step2a">類型是否為 EfiConventionalMemory（可用記憶體）</li>
-                                <li data-i18n="section3.2.step2b">大小是否足夠容納請求的頁數</li>
-                                <li data-i18n="section3.2.step2c">位址是否符合對齊要求</li>
+                                <li>類型是否為 EfiConventionalMemory（可用記憶體）</li>
+                                <li>大小是否足夠容納請求的頁數</li>
+                                <li>位址是否符合對齊要求</li>
                             </ul>
                         </li>
-                        <li data-i18n="section3.2.step3">找到第一個符合條件的區塊後停止搜尋</li>
-                        <li data-i18n="section3.2.step4">分割該區塊，更新記憶體映射表</li>
+                        <li>找到第一個符合條件的區塊後停止搜尋</li>
+                        <li>分割該區塊，更新記憶體映射表</li>
                     </ol>
                 </div>
             </div>
@@ -563,19 +554,19 @@ Status = gBS->AllocatePages (
 
         <!-- Section 4: Memory Deallocation -->
         <section id="deallocation" class="section">
-            <h1 data-i18n="section4.title">4. 記憶體釋放流程</h1>
+            <h1>4. 記憶體釋放流程</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section4.1.title">4.1 FreePages 釋放流程</h2>
-                <p class="description" data-i18n="section4.1.desc">
+                <h2>4.1 FreePages 釋放流程</h2>
+                <p class="description">
                     當呼叫 <code>gBS->FreePages()</code> 時，記憶體管理器會將記憶體歸還並嘗試合併相鄰的空閒區塊：
                 </p>
 
                 <div class="step-controls">
-                    <button id="free-prev" class="step-btn" disabled data-i18n="btn.prev">← 上一步</button>
+                    <button id="free-prev" class="step-btn" disabled>← 上一步</button>
                     <span id="free-step-indicator" class="step-indicator">步驟 1 / 6</span>
-                    <button id="free-next" class="step-btn" data-i18n="btn.next">下一步 →</button>
-                    <button id="free-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                    <button id="free-next" class="step-btn">下一步 →</button>
+                    <button id="free-reset" class="step-btn reset-btn">重置</button>
                 </div>
 
                 <div id="deallocation-viz" class="allocation-container">
@@ -605,25 +596,23 @@ Status = gBS->FreePages (
             </div>
 
             <div class="subsection">
-                <h2 data-i18n="section4.2.title">4.2 記憶體合併 (Coalescing)</h2>
-                <p class="description" data-i18n="section4.2.desc">
-                    釋放記憶體後，管理器會檢查相鄰區塊是否也是空閒的，如果是則合併它們以減少碎片化：
-                </p>
+                <h2>4.2 記憶體合併 (Coalescing)</h2>
+                <p class="description">釋放記憶體後，管理器會檢查相鄰區塊是否也是空閒的，如果是則合併它們以減少碎片化：</p>
                 
                 <div class="merge-diagram">
                     <div class="merge-before">
-                        <h4 data-i18n="section4.2.before">合併前</h4>
+                        <h4>合併前</h4>
                         <div class="merge-blocks">
-                            <div class="merge-block free" data-i18n="section4.2.free">Free<br><small>8 頁</small></div>
-                            <div class="merge-block releasing" data-i18n="section4.2.releasing">Releasing<br><small>4 頁</small></div>
-                            <div class="merge-block free" data-i18n="section4.2.free">Free<br><small>12 頁</small></div>
+                            <div class="merge-block free">Free<br><small>8 頁</small></div>
+                            <div class="merge-block releasing">Releasing<br><small>4 頁</small></div>
+                            <div class="merge-block free">Free<br><small>12 頁</small></div>
                         </div>
                     </div>
                     <div class="merge-arrow">→</div>
                     <div class="merge-after">
-                        <h4 data-i18n="section4.2.after">合併後</h4>
+                        <h4>合併後</h4>
                         <div class="merge-blocks">
-                            <div class="merge-block free large" data-i18n="section4.2.free">Free<br><small>24 頁</small></div>
+                            <div class="merge-block free large">Free<br><small>24 頁</small></div>
                         </div>
                     </div>
                 </div>
@@ -631,19 +620,19 @@ Status = gBS->FreePages (
         </section>
         <!-- Section 5: Pool Allocation -->
         <section id="pool-allocation" class="section">
-            <h1 data-i18n="section5.title">5. Pool 記憶體配置</h1>
+            <h1>5. Pool 記憶體配置</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section5.1.title">5.1 AllocatePool 配置流程</h2>
-                <p class="description" data-i18n="section5.1.desc">
+                <h2>5.1 AllocatePool 配置流程</h2>
+                <p class="description">
                     <code>AllocatePool</code> 用於配置小型記憶體區塊。它在已配置的頁面中管理 Pool，使用 <code>POOL_HEAD</code> 結構追蹤每個配置。
                 </p>
 
                 <div class="step-controls">
-                    <button id="pool-prev" class="step-btn" disabled data-i18n="btn.prev">← 上一步</button>
+                    <button id="pool-prev" class="step-btn" disabled>← 上一步</button>
                     <span id="pool-step-indicator" class="step-indicator">步驟 1 / 5</span>
-                    <button id="pool-next" class="step-btn" data-i18n="btn.next">下一步 →</button>
-                    <button id="pool-reset" class="step-btn reset-btn" data-i18n="btn.reset">重置</button>
+                    <button id="pool-next" class="step-btn">下一步 →</button>
+                    <button id="pool-reset" class="step-btn reset-btn">重置</button>
                 </div>
 
                 <div id="pool-viz" class="allocation-container">
@@ -664,7 +653,7 @@ Status = gBS->FreePages (
             </div>
 
             <div class="subsection">
-                <h2 data-i18n="section5.2.title">5.2 Pool 結構詳解</h2>
+                <h2>5.2 Pool 結構詳解</h2>
                 <div class="code-block">
                     <pre>
 typedef struct {
@@ -680,48 +669,46 @@ typedef struct {
 
         <!-- Section 6: Boot Timeline -->
         <section id="boot-timeline" class="section">
-            <h1 data-i18n="section6.title">6. 啟動階段記憶體時間線</h1>
+            <h1>6. 啟動階段記憶體時間線</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section6.1.title">6.1 記憶體映射演進</h2>
-                <p class="description" data-i18n="section6.1.desc">
-                    隨著系統啟動，記憶體映射會經歷不同的階段變化。點擊各階段查看該階段的記憶體狀態：
-                </p>
+                <h2>6.1 記憶體映射演進</h2>
+                <p class="description">隨著系統啟動，記憶體映射會經歷不同的階段變化。點擊各階段查看該階段的記憶體狀態：</p>
 
                 <div class="timeline-bar">
                     <button class="timeline-phase active" data-phase="sec">
-                        <span class="phase-name" data-i18n="timeline.sec">SEC</span>
-                        <span class="phase-desc" data-i18n="timeline.secDesc">安全驗證</span>
+                        <span class="phase-name">SEC</span>
+                        <span class="phase-desc">安全驗證</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-phase="pei">
-                        <span class="phase-name" data-i18n="timeline.pei">PEI</span>
-                        <span class="phase-desc" data-i18n="timeline.peiDesc">初始化基本記憶體</span>
+                        <span class="phase-name">PEI</span>
+                        <span class="phase-desc">初始化基本記憶體</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-phase="dxe">
-                        <span class="phase-name" data-i18n="timeline.dxe">DXE</span>
-                        <span class="phase-desc" data-i18n="timeline.dxeDesc">驅動執行環境</span>
+                        <span class="phase-name">DXE</span>
+                        <span class="phase-desc">驅動執行環境</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-phase="bds">
-                        <span class="phase-name" data-i18n="timeline.bds">BDS</span>
-                        <span class="phase-desc" data-i18n="timeline.bdsDesc">啟動設備選擇</span>
+                        <span class="phase-name">BDS</span>
+                        <span class="phase-desc">啟動設備選擇</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-phase="exit">
-                        <span class="phase-name" data-i18n="timeline.exit">ExitBootServices</span>
-                        <span class="phase-desc" data-i18n="timeline.exitDesc">移交給 OS</span>
+                        <span class="phase-name">ExitBootServices</span>
+                        <span class="phase-desc">移交給 OS</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-phase="os">
-                        <span class="phase-name" data-i18n="timeline.os">OS Runtime</span>
-                        <span class="phase-desc" data-i18n="timeline.osDesc">作業系統運行</span>
+                        <span class="phase-name">OS Runtime</span>
+                        <span class="phase-desc">作業系統運行</span>
                     </button>
                 </div>
 
                 <div class="diagram-container">
-                    <h3 data-i18n="timeline.mapTitle">記憶體映射快照</h3>
+                    <h3>記憶體映射快照</h3>
                     <div id="timeline-map" class="timeline-map-container">
                         <svg viewBox="0 0 900 300" id="timeline-svg"></svg>
                     </div>
@@ -731,38 +718,36 @@ typedef struct {
 
         <!-- Section 7: S4 Resume Memory Map -->
         <section id="s4-resume" class="section">
-            <h1 data-i18n="section7.title">7. S4 復甦記憶體映射</h1>
+            <h1>7. S4 復甦記憶體映射</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section7.1.title">7.1 S4 復甦階段記憶體映射</h2>
-                <p class="description" data-i18n="section7.1.desc">
-                    點擊各階段，查看系統從休眠喚醒到重新交還給 OS 的記憶體狀態與映射變化。
-                </p>
+                <h2>7.1 S4 復甦階段記憶體映射</h2>
+                <p class="description">點擊各階段，查看系統從休眠喚醒到重新交還給 OS 的記憶體狀態與映射變化。</p>
 
                 <div class="timeline-bar s4">
                     <button class="timeline-phase active" data-s4phase="wake">
-                        <span class="phase-name" data-i18n="s4.wake">喚醒向量</span>
-                        <span class="phase-desc" data-i18n="s4.wakeDesc">CPU 從 S4 喚醒</span>
+                        <span class="phase-name">喚醒向量</span>
+                        <span class="phase-desc">CPU 從 S4 喚醒</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-s4phase="firmware">
-                        <span class="phase-name" data-i18n="s4.firmware">韌體復原</span>
-                        <span class="phase-desc" data-i18n="s4.firmwareDesc">恢復引導環境</span>
+                        <span class="phase-name">韌體復原</span>
+                        <span class="phase-desc">恢復引導環境</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-s4phase="remap">
-                        <span class="phase-name" data-i18n="s4.remap">映射重建</span>
-                        <span class="phase-desc" data-i18n="s4.remapDesc">重建頁表/Runtime</span>
+                        <span class="phase-name">映射重建</span>
+                        <span class="phase-desc">重建頁表/Runtime</span>
                     </button>
                     <div class="timeline-connector"></div>
                     <button class="timeline-phase" data-s4phase="handoff">
-                        <span class="phase-name" data-i18n="s4.handoff">OS 交接</span>
-                        <span class="phase-desc" data-i18n="s4.handoffDesc">恢復 OS 狀態</span>
+                        <span class="phase-name">OS 交接</span>
+                        <span class="phase-desc">恢復 OS 狀態</span>
                     </button>
                 </div>
 
                 <div class="diagram-container">
-                    <h3 data-i18n="s4.mapTitle">S4 復甦記憶體映射快照</h3>
+                    <h3>S4 復甦記憶體映射快照</h3>
                     <div id="s4-map" class="timeline-map-container">
                         <svg viewBox="0 0 900 300" id="s4-svg"></svg>
                     </div>
@@ -772,19 +757,17 @@ typedef struct {
 
         <!-- Section 8: Policy Comparator -->
         <section id="policy-comparator" class="section">
-            <h1 data-i18n="section8.title">8. 配置策略比較</h1>
+            <h1>8. 配置策略比較</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section8.1.title">8.1 配置演算法比較</h2>
-                <p class="description" data-i18n="section7.1.desc">
-                    對相同的記憶體佈局和配置請求，不同的演算法會選擇不同的區塊。選擇演算法查看差異：
-                </p>
+                <h2>8.1 配置演算法比較</h2>
+                <p class="description">點擊各階段，查看系統從休眠喚醒到重新交還給 OS 的記憶體狀態與映射變化。</p>
 
                 <div class="policy-selector">
-                    <button class="policy-btn active" data-policy="first-fit" data-i18n="policy.firstFit">First-Fit</button>
-                    <button class="policy-btn" data-policy="best-fit" data-i18n="policy.bestFit">Best-Fit</button>
-                    <button class="policy-btn" data-policy="next-fit" data-i18n="policy.nextFit">Next-Fit</button>
-                    <span class="policy-request" data-i18n="policy.request">配置請求: 4 頁</span>
+                    <button class="policy-btn active" data-policy="first-fit">First-Fit</button>
+                    <button class="policy-btn" data-policy="best-fit">Best-Fit</button>
+                    <button class="policy-btn" data-policy="next-fit">Next-Fit</button>
+                    <span class="policy-request">配置請求: 4 頁</span>
                 </div>
 
                 <div class="diagram-container">
@@ -798,18 +781,16 @@ typedef struct {
 
         <!-- Section 9: Fragmentation Heatmap -->
         <section id="fragmentation-heatmap" class="section">
-            <h1 data-i18n="section9.title">9. 記憶體碎片化視覺化</h1>
+            <h1>9. 記憶體碎片化視覺化</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section9.1.title">9.1 碎片化熱力圖</h2>
-                <p class="description" data-i18n="section8.1.desc">
-                    互動式模擬記憶體配置與釋放，觀察碎片化程度的變化：
-                </p>
+                <h2>9.1 碎片化熱力圖</h2>
+                <p class="description">對相同的記憶體佈局和配置請求，不同的演算法會選擇不同的區塊。選擇演算法查看差異：</p>
 
                 <div class="frag-controls">
-                    <button id="frag-allocate" class="step-btn" data-i18n="frag.allocate">配置</button>
-                    <button id="frag-free" class="step-btn" data-i18n="frag.free">釋放</button>
-                    <button id="frag-reset" class="step-btn reset-btn" data-i18n="frag.reset">重置</button>
+                    <button id="frag-allocate" class="step-btn">配置</button>
+                    <button id="frag-free" class="step-btn">釋放</button>
+                    <button id="frag-reset" class="step-btn reset-btn">重置</button>
                 </div>
 
                 <div class="diagram-container">
@@ -818,23 +799,23 @@ typedef struct {
                     </div>
                     <div id="frag-metrics" class="frag-metrics">
                         <div class="metric-card">
-                            <span class="metric-label" data-i18n="frag.freeBlocks">可用區塊數</span>
+                            <span class="metric-label">可用區塊數</span>
                             <span class="metric-value" id="frag-free-blocks">1</span>
                         </div>
                         <div class="metric-card">
-                            <span class="metric-label" data-i18n="frag.largestFree">最大可用區塊</span>
+                            <span class="metric-label">最大可用區塊</span>
                             <span class="metric-value" id="frag-largest-free">64</span>
                         </div>
                         <div class="metric-card">
-                            <span class="metric-label" data-i18n="frag.fragRatio">碎片化比率</span>
+                            <span class="metric-label">碎片化比率</span>
                             <span class="metric-value" id="frag-ratio">0%</span>
                         </div>
                         <div class="metric-card">
-                            <span class="metric-label" data-i18n="frag.totalFree">總可用空間</span>
+                            <span class="metric-label">總可用空間</span>
                             <span class="metric-value" id="frag-total-free">64</span>
                         </div>
                         <div class="metric-card">
-                            <span class="metric-label" data-i18n="frag.ops">操作次數</span>
+                            <span class="metric-label">操作次數</span>
                             <span class="metric-value" id="frag-ops">0</span>
                         </div>
                     </div>
@@ -844,24 +825,24 @@ typedef struct {
 
         <!-- Section 10: Runtime Handoff -->
         <section id="runtime-handoff" class="section">
-            <h1 data-i18n="section10.title">10. ExitBootServices 記憶體交接</h1>
+            <h1>10. ExitBootServices 記憶體交接</h1>
             
             <div class="subsection">
-                <h2 data-i18n="section10.1.title">10.1 啟動服務到 Runtime 交接</h2>
-                <p class="description" data-i18n="section9.1.desc">
+                <h2>10.1 啟動服務到 Runtime 交接</h2>
+                <p class="description">
                     當 OS Loader 呼叫 <code>ExitBootServices()</code> 後，Boot Services 記憶體被回收，只有 Runtime 和 ACPI 區域保留：
                 </p>
 
                 <div class="handoff-container">
                     <div class="handoff-panel">
-                        <h3 data-i18n="handoff.before">ExitBootServices 之前</h3>
+                        <h3>ExitBootServices 之前</h3>
                         <div id="handoff-before">
                             <svg viewBox="0 0 400 400" id="handoff-before-svg"></svg>
                         </div>
                     </div>
                     <div class="handoff-arrow">→</div>
                     <div class="handoff-panel">
-                        <h3 data-i18n="handoff.after">ExitBootServices 之後</h3>
+                        <h3>ExitBootServices 之後</h3>
                         <div id="handoff-after">
                             <svg viewBox="0 0 400 400" id="handoff-after-svg"></svg>
                         </div>
@@ -873,15 +854,15 @@ typedef struct {
 
     <!-- Export Toolbar -->
     <div id="export-toolbar" class="export-toolbar">
-        <button id="export-toggle" class="export-toggle-btn" data-i18n="export.title">匯出</button>
+        <button id="export-toggle" class="export-toggle-btn">匯出</button>
         <div id="export-dropdown" class="export-dropdown hidden">
-            <button id="export-svg" class="export-option" data-i18n="export.copySvg">複製 SVG</button>
-            <button id="export-png" class="export-option" data-i18n="export.downloadPng">下載 PNG</button>
+            <button id="export-svg" class="export-option">複製 SVG</button>
+            <button id="export-png" class="export-option">下載 PNG</button>
         </div>
     </div>
 
     <footer class="footer">
-        <p data-i18n="footer.text">UEFI EDK2 記憶體管理視覺化 | 教育用途</p>
+        <p>UEFI EDK2 記憶體管理視覺化 | 教育用途</p>
     </footer>
 
     <script src="script.js"></script>

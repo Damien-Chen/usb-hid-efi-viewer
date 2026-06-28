@@ -1,3 +1,162 @@
+/* i18n (Chinese only) - baked in, EN version removed */
+const translations = { 'zh-TW': {
+    "page.title": "UEFI Driver Binding 機制視覺化",
+    "nav.back": "← 返回工具列表",
+    "nav.overview": "概述",
+    "nav.structs": "內部結構",
+    "nav.connect": "ConnectController",
+    "nav.disconnect": "DisconnectController",
+    "nav.scenario": "實際案例",
+    "nav.code": "程式碼解析",
+    "nav.references": "參考資源",
+    "overview.title": "UEFI Driver Binding Protocol 概述",
+    "overview.subtitle": "理解 EDK2 驅動程式如何被動態綁定到設備",
+    "overview.what.title": "什麼是 Driver Binding Protocol？",
+    "overview.what.desc": "EFI_DRIVER_BINDING_PROTOCOL 是 UEFI 驅動程式模型的核心。每個符合 UEFI 驅動程式模型的驅動程式都必須實作此協定，並將其安裝在自己的映像句柄（Image Handle）上。DXE Core 透過 ConnectController() 服務，以此協定為媒介，動態地將驅動程式與設備句柄（Device Handle）綁定。",
+    "overview.why.title": "為什麼需要此機制？",
+    "overview.why.desc": "UEFI 採用資料驅動的設備探測模型：驅動程式不在載入時就與硬體綁定，而是由系統在需要時透過標準 API 進行匹配。這使得驅動程式的新增或替換不需修改核心，提供高度的可擴充性與可替換性。",
+    "overview.three.title": "三個核心函式",
+    "overview.supported.title": "Supported()",
+    "overview.supported.desc": "測試此驅動程式是否支援指定的 Controller Handle。通常嘗試開啟特定協定（例如 PCI I/O Protocol）並驗證 Vendor ID/Device ID。必須是冪等操作，不得改變系統狀態。",
+    "overview.start.title": "Start()",
+    "overview.start.desc": "在指定的 Controller Handle 上啟動此驅動程式。在此函式中：①開啟所需協定（BY_DRIVER）②配置硬體資源③在控制器或子句柄上安裝此驅動程式提供的協定。",
+    "overview.stop.title": "Stop()",
+    "overview.stop.desc": "從指定的 Controller Handle 停止此驅動程式。必須撤銷 Start() 所做的一切：①解除安裝協定②關閉開啟的協定③銷毀子句柄④釋放所有資源。",
+    "overview.connect.title": "ConnectController() 的角色",
+    "overview.connect.desc": "DXE Core 提供的 BS->ConnectController() 是驅動程式綁定的入口。它遍歷所有已安裝的 EFI_DRIVER_BINDING_PROTOCOL，對每個協定依優先順序（Version 欄位）呼叫 Supported()，找到匹配的驅動程式後呼叫 Start()。",
+    "structs.title": "內部核心資料結構",
+    "structs.subtitle": "EDK2 DXE Core 如何在記憶體中表示句柄與協定",
+    "structs.ihandle.title": "IHANDLE — 句柄的核心表示",
+    "structs.ihandle.desc": "每個 EFI_HANDLE 實際上是一個指向 IHANDLE 結構的指標。IHANDLE 是 EDK2 Core 私有的結構（定義於 DxeMain.h），外部程式碼只能看到 VOID* 類型的 EFI_HANDLE。",
+    "structs.ihandle.sig": "Signature：魔法數字 'hand'，用於驗證指標有效性",
+    "structs.ihandle.all": "AllHandles：連接到全域句柄資料庫 gHandleList 的 LIST_ENTRY",
+    "structs.ihandle.protos": "Protocols：此句柄上所有已安裝協定的 LIST_ENTRY 鏈結串列頭部",
+    "structs.ihandle.key": "Key：單調遞增的唯一識別鍵，供 LocateHandleBuffer 使用",
+    "structs.proto_iface.title": "PROTOCOL_INTERFACE — 協定安裝記錄",
+    "structs.proto_iface.desc": "每次呼叫 InstallProtocolInterface() 都會建立一個 PROTOCOL_INTERFACE 結構，記錄「在哪個句柄上安裝了哪個協定、介面指標是什麼」。",
+    "structs.proto_iface.sig": "Signature：'pi'，有效性驗證",
+    "structs.proto_iface.link": "Link：連接到所屬 IHANDLE.Protocols 串列的 LIST_ENTRY",
+    "structs.proto_iface.handle": "Handle：回指所屬的 IHANDLE",
+    "structs.proto_iface.pe": "Protocol：指向對應 PROTOCOL_ENTRY 的指標（含 GUID）",
+    "structs.proto_iface.iface": "Interface：指向實際協定結構的 void* 指標",
+    "structs.proto_iface.open": "OpenList：透過 OpenProtocol() 開啟此協定的所有記錄串列",
+    "structs.proto_entry.title": "PROTOCOL_ENTRY — 全域協定登錄",
+    "structs.proto_entry.desc": "PROTOCOL_ENTRY 是全域協定資料庫（gProtocolDatabase）中的一個項目，代表某個 GUID 對應的協定類型。同一 GUID 在整個系統中只有一個 PROTOCOL_ENTRY。",
+    "structs.proto_entry.sig": "Signature：'pe'",
+    "structs.proto_entry.all": "AllEntries：連接到 gProtocolDatabase 串列",
+    "structs.proto_entry.guid": "ProtocolID：此協定的 EFI_GUID",
+    "structs.proto_entry.protos": "Protocols：所有安裝了此協定的 PROTOCOL_INTERFACE 串列",
+    "structs.proto_entry.notify": "Notify：此協定的 RegisterProtocolNotify 回呼串列",
+    "structs.diagram.title": "三層結構關係圖",
+    "structs.diagram.desc": "gHandleList 串聯所有 IHANDLE；每個 IHANDLE.Protocols 串聯其上所有 PROTOCOL_INTERFACE；每個 PROTOCOL_INTERFACE.Protocol 回指全域 PROTOCOL_ENTRY。",
+    "connect.title": "ConnectController 逐步流程",
+    "connect.subtitle": "觀察 DXE Core 如何將驅動程式動態綁定到設備句柄，以及 IHANDLE 在每個步驟的變化",
+    "connect.step1.title": "步驟 1：初始狀態",
+    "connect.step1.desc": "一個 USB XHCI 控制器的設備句柄已由 PCI Bus Driver 建立，並安裝了 EFI_DEVICE_PATH_PROTOCOL 和 EFI_PCI_IO_PROTOCOL。尚未有 USB Host Controller Driver 綁定到此句柄。",
+    "connect.step2.title": "步驟 2：ConnectController() 被呼叫",
+    "connect.step2.desc": "BDS 或其他驅動程式呼叫 gBS->ConnectController(ControllerHandle, NULL, NULL, TRUE)。DXE Core 首先在全域句柄列表中找到所有安裝了 EFI_DRIVER_BINDING_PROTOCOL 的句柄，並依 Version 欄位排序（高優先）。",
+    "connect.step3.title": "步驟 3：Supported() 輪詢",
+    "connect.step3.desc": "Core 對排序後的每個驅動程式依序呼叫其 Supported() 函式，傳入 ControllerHandle。驅動程式在 Supported() 中嘗試 OpenProtocol(EFI_PCI_IO_PROTOCOL, BY_DRIVER) 並讀取 Class Code，確認是 USB XHCI 控制器後回傳 EFI_SUCCESS。",
+    "connect.step4.title": "步驟 4：Start() 被呼叫",
+    "connect.step4.desc": "Supported() 回傳 EFI_SUCCESS 後，Core 立即呼叫同一驅動程式的 Start()。驅動程式在 Start() 中：① 正式 OpenProtocol(EFI_PCI_IO_PROTOCOL, BY_DRIVER) ② 初始化 XHCI 控制器硬體 ③ 建立內部資料結構 ④ 呼叫 InstallProtocolInterface 在 ControllerHandle 上安裝 EFI_USB2_HC_PROTOCOL。",
+    "connect.step5.title": "步驟 5：協定安裝後的 IHANDLE",
+    "connect.step5.desc": "InstallProtocolInterface() 建立新的 PROTOCOL_INTERFACE 節點，插入 IHANDLE.Protocols 串列。同時更新全域 PROTOCOL_ENTRY(EFI_USB2_HC_PROTOCOL) 的 Protocols 串列，並觸發已登錄的 RegisterProtocolNotify 回呼。",
+    "connect.step6.title": "步驟 6：子句柄建立（Bus Driver）",
+    "connect.step6.desc": "Start() 完成後，USB Bus Driver 的 ConnectController 會接著執行。USB Bus Driver 在 Start() 中為每個偵測到的 USB 裝置呼叫 InstallMultipleProtocolInterfaces，建立子 EFI_HANDLE，並在子句柄上安裝 EFI_DEVICE_PATH_PROTOCOL 和 EFI_USB_IO_PROTOCOL。",
+    "connect.step7.title": "步驟 7：完成",
+    "connect.step7.desc": "ConnectController() 完成。此時 XHCI 控制器句柄已有 Device Path、PCI IO、USB2 HC 三個協定；每個 USB 設備子句柄各有 Device Path 和 USB IO 協定。系統可以透過這些協定與硬體互動。",
+    "disconnect.title": "DisconnectController / Stop() 逐步流程",
+    "disconnect.subtitle": "觀察 DXE Core 如何拆除驅動程式綁定並清理 IHANDLE",
+    "disconnect.step1.title": "步驟 1：DisconnectController() 被呼叫",
+    "disconnect.step1.desc": "呼叫 gBS->DisconnectController(ControllerHandle, NULL, NULL)。DXE Core 在 ControllerHandle 的 Protocols 串列中，找出所有透過 BY_DRIVER 模式開啟協定的驅動程式記錄（OPEN_PROTOCOL_DATA）。",
+    "disconnect.step2.title": "步驟 2：先停止子句柄",
+    "disconnect.step2.desc": "Core 必須先遞迴停止所有子句柄。對 USB Bus Driver 建立的每個子 Handle 呼叫 DisconnectController，確保子驅動程式都已執行 Stop() 後，才繼續停止父控制器上的驅動程式。",
+    "disconnect.step3.title": "步驟 3：Stop() 被呼叫",
+    "disconnect.step3.desc": "Core 呼叫 USB Host Controller Driver 的 Stop(ControllerHandle, NumberOfChildren, ChildHandleBuffer)。驅動程式在 Stop() 中：① 卸載 EFI_USB2_HC_PROTOCOL（UninstallProtocolInterface）② 停止硬體 ③ 關閉開啟的 EFI_PCI_IO_PROTOCOL（CloseProtocol）④ 釋放所有配置的記憶體。",
+    "disconnect.step4.title": "步驟 4：UninstallProtocolInterface",
+    "disconnect.step4.desc": "UninstallProtocolInterface() 從 IHANDLE.Protocols 串列中移除對應的 PROTOCOL_INTERFACE 節點，並從全域 PROTOCOL_ENTRY.Protocols 串列中取消鏈結。如果該協定有 RegisterProtocolNotify 回呼，會通知已登錄的事件。",
+    "disconnect.step5.title": "步驟 5：子句柄銷毀",
+    "disconnect.step5.desc": "USB Bus Driver 的 Stop() 呼叫 UninstallMultipleProtocolInterfaces 移除子句柄上的所有協定，然後呼叫 FreePool 釋放 IHANDLE 記憶體，並從 gHandleList 中取消鏈結。子 EFI_HANDLE 現在是無效指標。",
+    "disconnect.step6.title": "步驟 6：完成 — 還原初始狀態",
+    "disconnect.step6.desc": "DisconnectController() 完成。ControllerHandle 的 IHANDLE.Protocols 串列已回到只剩 EFI_DEVICE_PATH_PROTOCOL 和 EFI_PCI_IO_PROTOCOL 的初始狀態。USB 子句柄已不存在。",
+    "scenario.title": "實際案例：PCI 設備完整綁定鏈",
+    "scenario.subtitle": "從 PCI 列舉到 Disk I/O Protocol 的完整 Driver Binding 過程",
+    "scenario.desc": "以下展示一個 NVMe SSD 連接在 PCIe 匯流排上時，完整的 Driver Binding 鏈：PCI Host Bridge Driver → PCI Bus Driver → NVMe Controller Driver。每一層的父驅動程式建立子句柄後，下一層驅動程式再綁定到子句柄。",
+    "scenario.layer0": "PCI Host Bridge（Root Handle）",
+    "scenario.layer1": "PCI Bus Driver 建立 PCI Device Handles",
+    "scenario.layer2": "NVMe Driver 綁定到 NVMe PCI Device",
+    "scenario.layer3": "Partition Driver 建立磁碟分割子句柄",
+    "scenario.l0.desc": "PCI Host Bridge Driver 在 Root Bridge Handle 上安裝 EFI_PCI_ROOT_BRIDGE_IO_PROTOCOL。此句柄代表整個 PCI 匯流排空間。",
+    "scenario.l1.desc": "PCI Bus Driver 的 Start() 列舉所有 PCI 設備，對每個設備建立子 EFI_HANDLE，安裝 EFI_PCI_IO_PROTOCOL 和 EFI_DEVICE_PATH_PROTOCOL。",
+    "scenario.l2.desc": "NVMe Controller Driver 的 Supported() 確認 PCI Class Code 為 0x010802（NVMe），Start() 初始化控制器並安裝 EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL 和 EFI_BLOCK_IO_PROTOCOL。",
+    "scenario.l3.desc": "Partition Driver 透過 EFI_BLOCK_IO_PROTOCOL 讀取 GPT 表，對每個分割區建立子句柄，安裝 EFI_BLOCK_IO_PROTOCOL（分割區範圍）和 EFI_DEVICE_PATH_PROTOCOL（含 GPT 分割區節點）。",
+    "code.title": "關鍵程式碼解析",
+    "code.subtitle": "EDK2 DXE Core 中實作 Driver Binding 的核心程式碼",
+    "code.connect.title": "CoreConnectController() 核心邏輯",
+    "code.connect.file": "來源：MdeModulePkg/Core/Dxe/Hand/DriverSupport.c",
+    "code.install.title": "CoreInstallProtocolInterface() 核心邏輯",
+    "code.install.file": "來源：MdeModulePkg/Core/Dxe/Hand/Handle.c",
+    "code.binding.title": "典型 Driver Binding Protocol 實作",
+    "code.binding.file": "範例：一個簡化的 USB Host Controller Driver",
+    "references.title": "參考資源",
+    "references.desc": "以下規格文件與原始碼是本頁面的知識來源",
+    "ref.uefi.title": "UEFI Specification 2.10 — Section 11: Protocols — Driver Binding Protocol",
+    "ref.uefi.desc": "定義 EFI_DRIVER_BINDING_PROTOCOL 結構、Supported/Start/Stop 語義、ConnectController/DisconnectController 演算法。",
+    "ref.pi.title": "UEFI Platform Initialization Specification — Volume 2: Driver Execution Environment",
+    "ref.pi.desc": "定義 DXE Core 服務、驅動程式模型、IHANDLE/PROTOCOL_INTERFACE 記憶體模型。",
+    "ref.edk2.hand": "EDK2 Source: MdeModulePkg/Core/Dxe/Hand/Handle.c",
+    "ref.edk2.hand.desc": "CoreInstallProtocolInterface、CoreUninstallProtocolInterface、CoreLocateHandle 的實作。",
+    "ref.edk2.drv": "EDK2 Source: MdeModulePkg/Core/Dxe/Hand/DriverSupport.c",
+    "ref.edk2.drv.desc": "CoreConnectController、CoreDisconnectController、CoreConnectSingleController 的實作。",
+    "ref.edk2.main": "EDK2 Source: MdeModulePkg/Core/Dxe/DxeMain.h",
+    "ref.edk2.main.desc": "IHANDLE、PROTOCOL_INTERFACE、PROTOCOL_ENTRY、OPEN_PROTOCOL_DATA 結構定義。",
+    "btn.prev": "← 上一步",
+    "btn.next": "下一步 →",
+    "btn.reset": "重置",
+    "footer.text": "UEFI Driver Binding 機制視覺化 | 教育用途"
+} };
+let currentLang = 'zh-TW';
+
+function t(key, params = {}) {
+    let text = (translations['zh-TW'] && translations['zh-TW'][key]) || key;
+    Object.keys(params).forEach((param) => {
+        text = text.replace(`{${param}}`, params[param]);
+    });
+    return text;
+}
+
+function getCurrentLang() {
+    return 'zh-TW';
+}
+
+function updatePageTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const value = t(key);
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.placeholder = value;
+        } else {
+            el.innerHTML = value;
+        }
+    });
+    document.title = t('page.title');
+}
+
+function setLanguage() {
+    document.documentElement.lang = 'zh-TW';
+    updatePageTranslations();
+    if (typeof refreshDynamicContent === 'function') {
+        refreshDynamicContent();
+    }
+    if (typeof updateBuildCommand === 'function') {
+        updateBuildCommand();
+    }
+}
+
+function initI18n() {
+    setLanguage();
+}
+
 /* ------------------------------------------------------------------ */
 /*  UEFI Driver Binding Mechanism Visualizer – Main Script             */
 /*  Sections: structs diagram, ConnectController, DisconnectController, */
